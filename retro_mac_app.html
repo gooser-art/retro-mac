@@ -388,6 +388,198 @@
             font-weight: bold;
             text-shadow: 1px 1px 0 #fff;
         }
+        
+        /* Classic Mac Animations */
+        @keyframes blink {
+            0% { opacity: 0; }
+            30% { opacity: 1; }
+            70% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        
+        @keyframes startup {
+            0% { 
+                opacity: 0; 
+                transform: scale(0.8) translate(-50%, -50%);
+            }
+            50% { 
+                opacity: 0.7; 
+                transform: scale(1.1) translate(-50%, -50%);
+            }
+            100% { 
+                opacity: 1; 
+                transform: scale(1) translate(-50%, -50%);
+            }
+        }
+        
+        @keyframes windowOpen {
+            0% { 
+                opacity: 0; 
+                transform: scale(0.5);
+            }
+            100% { 
+                opacity: 1; 
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes iconBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+        
+        @keyframes powerPulse {
+            0%, 100% { 
+                box-shadow: 0 0 8px #00ff00;
+                opacity: 1;
+            }
+            50% { 
+                box-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00;
+                opacity: 0.8;
+            }
+        }
+        
+        @keyframes rainbowRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Blinking cursor effect */
+        .blink {
+            animation: blink 0.4s linear infinite;
+        }
+        
+        /* Startup animation */
+        .startup-animation {
+            animation: startup 2s ease-out forwards;
+        }
+        
+        /* Window open animation */
+        .window-opening {
+            animation: windowOpen 0.3s ease-out forwards;
+        }
+        
+        /* Icon hover effects */
+        .desktop-icon:hover {
+            animation: iconBounce 0.6s ease-in-out;
+        }
+        
+        /* Power indicator animation */
+        .power-indicator {
+            animation: powerPulse 2s ease-in-out infinite;
+        }
+        
+        /* Rainbow Apple logo rotation */
+        .apple-logo {
+            animation: rainbowRotate 10s linear infinite;
+        }
+        
+        /* Classic Mac startup sound effect simulation */
+        .startup-sound {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: #000;
+            text-shadow: 1px 1px 0 #fff;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        
+        /* Retro scanlines effect */
+        .scanlines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                transparent 50%, 
+                rgba(0, 0, 0, 0.1) 50%
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        /* CRT screen effect */
+        .crt-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                circle at center,
+                transparent 0%,
+                rgba(0, 0, 0, 0.1) 100%
+            );
+            pointer-events: none;
+            z-index: 999;
+        }
+        
+        /* Menu bar animations */
+        .menu-item {
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .menu-item:hover {
+            background: #000;
+            color: #fff;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Button press animations */
+        .btn:active {
+            box-shadow: 
+                inset -1px -1px 0 #fff,
+                inset 1px 1px 0 #808080;
+            transform: translate(1px, 1px);
+            transition: all 0.1s ease-in-out;
+        }
+        
+        /* Window focus effects */
+        .window.focused {
+            box-shadow: 
+                inset 1px 1px 0 #fff,
+                inset -1px -1px 0 #808080,
+                0 0 0 2px #000,
+                4px 4px 0 rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Desktop icon selection animation */
+        .desktop-icon.selected {
+            background: rgba(0, 0, 255, 0.3);
+            color: #fff;
+            animation: iconBounce 0.3s ease-in-out;
+        }
+        
+        /* Trash can hover effect */
+        .trash-can:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(1.05);
+            transition: all 0.2s ease-in-out;
+        }
+        
+        /* Welcome message typing effect */
+        .typing-effect {
+            overflow: hidden;
+            border-right: 2px solid #000;
+            white-space: nowrap;
+            animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+        
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: #000; }
+        }
     </style>
 </head>
 <body>
@@ -401,7 +593,11 @@
         <!-- Power Indicator -->
         <div class="power-indicator"></div>
         
-        <div class="desktop">
+            <div class="desktop">
+            <!-- Retro Effects -->
+            <div class="scanlines"></div>
+            <div class="crt-effect"></div>
+            
             <!-- Menu Bar -->
             <div class="menu-bar">
                 <div class="menu-item apple-menu">🍎</div>
@@ -412,10 +608,13 @@
                 <div style="margin-left: auto;">12:00 PM</div>
             </div>
             
-            <!-- Welcome Message -->
-            <div class="welcome-message">Welcome to Macintosh!</div>
+            <!-- Welcome Message with Typing Effect -->
+            <div class="welcome-message typing-effect">Welcome to Macintosh!</div>
             
-            <!-- Desktop Icons -->
+            <!-- Startup Sound Effect -->
+            <div class="startup-sound" id="startup-sound">🔊</div>
+        
+        <!-- Desktop Icons -->
             <div class="desktop-icon" style="top: 40px; right: 20px;" onclick="openApp('system')">
                 <div class="icon-system-disk">💾</div>
                 System Disk
@@ -432,7 +631,7 @@
                 Trash
             </div>
             
-            <!-- Additional App Icons -->
+                        <!-- Additional App Icons -->
             <div class="desktop-icon" style="top: 40px; left: 20px;" onclick="openApp('notes')">
                 <div class="icon-welcome">📝</div>
                 Notes
@@ -458,6 +657,18 @@
                 To-Do
             </div>
             
+            <!-- Command Prompt Icon -->
+            <div class="desktop-icon" style="top: 200px; left: 20px;" onclick="openApp('terminal')">
+                <div class="icon-welcome">💻</div>
+                Terminal
+            </div>
+            
+            <!-- System Preferences Icon -->
+            <div class="desktop-icon" style="top: 200px; left: 100px;" onclick="openApp('preferences')">
+                <div class="icon-welcome">⚙️</div>
+                Preferences
+            </div>
+        
             <!-- System Disk Window -->
             <div id="system-window" class="window hidden" style="top: 100px; left: 100px; width: 400px; height: 300px;">
                 <div class="window-header">
@@ -500,115 +711,115 @@
                     </p>
                     <button class="btn" onclick="closeWindow('welcome-window')">OK</button>
                 </div>
-            </div>
-            
-            <!-- Notes App Window -->
-            <div id="notes-window" class="window hidden" style="top: 100px; left: 100px; width: 400px; height: 300px;">
-                <div class="window-header">
-                    <div class="window-title">Notes</div>
-                    <div class="window-controls">
-                        <div class="window-control" onclick="minimizeWindow('notes-window')">-</div>
-                        <div class="window-control" onclick="closeWindow('notes-window')">×</div>
-                    </div>
-                </div>
-                <div class="window-content notes-app">
-                    <textarea id="notes-text" placeholder="Start typing your notes here..."></textarea>
-                    <div style="margin-top: 16px;">
-                        <button class="btn" onclick="saveNotes()">Save</button>
-                        <button class="btn" onclick="clearNotes()">Clear</button>
-                    </div>
+        </div>
+        
+        <!-- Notes App Window -->
+        <div id="notes-window" class="window hidden" style="top: 100px; left: 100px; width: 400px; height: 300px;">
+            <div class="window-header">
+                <div class="window-title">Notes</div>
+                <div class="window-controls">
+                    <div class="window-control" onclick="minimizeWindow('notes-window')">-</div>
+                    <div class="window-control" onclick="closeWindow('notes-window')">×</div>
                 </div>
             </div>
-            
-            <!-- Calculator App Window -->
-            <div id="calculator-window" class="window hidden" style="top: 150px; left: 200px; width: 300px; height: 400px;">
-                <div class="window-header">
-                    <div class="window-title">Calculator</div>
-                    <div class="window-controls">
-                        <div class="window-control" onclick="minimizeWindow('calculator-window')">-</div>
-                        <div class="window-control" onclick="closeWindow('calculator-window')">×</div>
-                    </div>
-                </div>
-                <div class="window-content">
-                    <div class="calculator-display" id="calc-display">0</div>
-                    <div class="calculator-grid">
-                        <button class="btn" onclick="calcClear()">C</button>
-                        <button class="btn" onclick="calcDelete()">⌫</button>
-                        <button class="btn" onclick="calcOperator('/')">/</button>
-                        <button class="btn" onclick="calcOperator('*')">×</button>
-                        
-                        <button class="btn" onclick="calcNumber('7')">7</button>
-                        <button class="btn" onclick="calcNumber('8')">8</button>
-                        <button class="btn" onclick="calcNumber('9')">9</button>
-                        <button class="btn" onclick="calcOperator('-')">-</button>
-                        
-                        <button class="btn" onclick="calcNumber('4')">4</button>
-                        <button class="btn" onclick="calcNumber('5')">5</button>
-                        <button class="btn" onclick="calcNumber('6')">6</button>
-                        <button class="btn" onclick="calcOperator('+')">+</button>
-                        
-                        <button class="btn" onclick="calcNumber('1')">1</button>
-                        <button class="btn" onclick="calcNumber('2')">2</button>
-                        <button class="btn" onclick="calcNumber('3')">3</button>
-                        <button class="btn" onclick="calcEquals()" style="grid-row: span 2;">=</button>
-                        
-                        <button class="btn" onclick="calcNumber('0')" style="grid-column: span 2;">0</button>
-                        <button class="btn" onclick="calcNumber('.')">.</button>
-                    </div>
+            <div class="window-content notes-app">
+                <textarea id="notes-text" placeholder="Start typing your notes here..."></textarea>
+                <div style="margin-top: 16px;">
+                    <button class="btn" onclick="saveNotes()">Save</button>
+                    <button class="btn" onclick="clearNotes()">Clear</button>
                 </div>
             </div>
-            
-            <!-- Files App Window -->
-            <div id="files-window" class="window hidden" style="top: 200px; left: 50px; width: 500px; height: 400px;">
-                <div class="window-header">
-                    <div class="window-title">Files</div>
-                    <div class="window-controls">
-                        <div class="window-control" onclick="minimizeWindow('files-window')">-</div>
-                        <div class="window-control" onclick="closeWindow('files-window')">×</div>
-                    </div>
-                </div>
-                <div class="window-content">
-                    <div style="margin-bottom: 16px;">
-                        <button class="btn" onclick="createNewFile()">New File</button>
-                        <button class="btn" onclick="deleteSelectedFile()">Delete</button>
-                    </div>
-                    <ul class="file-list" id="file-list">
-                        <li class="file-item" data-file="document.txt">
-                            <div style="width: 16px; height: 16px; background: #fff; border: 1px solid #000; margin-right: 8px; display: flex; align-items: center; justify-content: center; font-size: 8px;">T</div>
-                            document.txt
-                        </li>
-                        <li class="file-item" data-file="image.png">
-                            <div style="width: 16px; height: 16px; background: #fff; border: 1px solid #000; margin-right: 8px; display: flex; align-items: center; justify-content: center; font-size: 8px;">I</div>
-                            image.png
-                        </li>
-                        <li class="file-item" data-file="notes.txt">
-                            <div style="width: 16px; height: 16px; background: #fff; border: 1px solid #000; margin-right: 8px; display: flex; align-items: center; justify-content: center; font-size: 8px;">T</div>
-                            notes.txt
-                        </li>
-                    </ul>
+        </div>
+        
+        <!-- Calculator App Window -->
+        <div id="calculator-window" class="window hidden" style="top: 150px; left: 200px; width: 300px; height: 400px;">
+            <div class="window-header">
+                <div class="window-title">Calculator</div>
+                <div class="window-controls">
+                    <div class="window-control" onclick="minimizeWindow('calculator-window')">-</div>
+                    <div class="window-control" onclick="closeWindow('calculator-window')">×</div>
                 </div>
             </div>
-            
-            <!-- Paint App Window -->
-            <div id="paint-window" class="window hidden" style="top: 250px; left: 300px; width: 600px; height: 500px;">
-                <div class="window-header">
-                    <div class="window-title">Paint</div>
-                    <div class="window-controls">
-                        <div class="window-control" onclick="minimizeWindow('paint-window')">-</div>
-                        <div class="window-control" onclick="closeWindow('paint-window')">×</div>
-                    </div>
-                </div>
-                <div class="window-content">
-                    <div style="margin-bottom: 16px;">
-                        <button class="btn" onclick="clearCanvas()">Clear</button>
-                        <button class="btn" onclick="saveCanvas()">Save</button>
-                        <input type="color" id="paint-color" value="#000000" style="width: 40px; height: 30px;">
-                    </div>
-                    <canvas id="paint-canvas" width="550" height="400" style="border: 2px solid #000; cursor: crosshair;"></canvas>
+            <div class="window-content">
+                <div class="calculator-display" id="calc-display">0</div>
+                <div class="calculator-grid">
+                    <button class="btn" onclick="calcClear()">C</button>
+                    <button class="btn" onclick="calcDelete()">⌫</button>
+                    <button class="btn" onclick="calcOperator('/')">/</button>
+                    <button class="btn" onclick="calcOperator('*')">×</button>
+                    
+                    <button class="btn" onclick="calcNumber('7')">7</button>
+                    <button class="btn" onclick="calcNumber('8')">8</button>
+                    <button class="btn" onclick="calcNumber('9')">9</button>
+                    <button class="btn" onclick="calcOperator('-')">-</button>
+                    
+                    <button class="btn" onclick="calcNumber('4')">4</button>
+                    <button class="btn" onclick="calcNumber('5')">5</button>
+                    <button class="btn" onclick="calcNumber('6')">6</button>
+                    <button class="btn" onclick="calcOperator('+')">+</button>
+                    
+                    <button class="btn" onclick="calcNumber('1')">1</button>
+                    <button class="btn" onclick="calcNumber('2')">2</button>
+                    <button class="btn" onclick="calcNumber('3')">3</button>
+                    <button class="btn" onclick="calcEquals()" style="grid-row: span 2;">=</button>
+                    
+                    <button class="btn" onclick="calcNumber('0')" style="grid-column: span 2;">0</button>
+                    <button class="btn" onclick="calcNumber('.')">.</button>
                 </div>
             </div>
-            
-            <!-- To-Do App Window -->
+        </div>
+        
+        <!-- Files App Window -->
+        <div id="files-window" class="window hidden" style="top: 200px; left: 50px; width: 500px; height: 400px;">
+            <div class="window-header">
+                <div class="window-title">Files</div>
+                <div class="window-controls">
+                    <div class="window-control" onclick="minimizeWindow('files-window')">-</div>
+                    <div class="window-control" onclick="closeWindow('files-window')">×</div>
+                </div>
+            </div>
+            <div class="window-content">
+                <div style="margin-bottom: 16px;">
+                    <button class="btn" onclick="createNewFile()">New File</button>
+                    <button class="btn" onclick="deleteSelectedFile()">Delete</button>
+                </div>
+                <ul class="file-list" id="file-list">
+                    <li class="file-item" data-file="document.txt">
+                        <div style="width: 16px; height: 16px; background: #fff; border: 1px solid #000; margin-right: 8px; display: flex; align-items: center; justify-content: center; font-size: 8px;">T</div>
+                        document.txt
+                    </li>
+                    <li class="file-item" data-file="image.png">
+                        <div style="width: 16px; height: 16px; background: #fff; border: 1px solid #000; margin-right: 8px; display: flex; align-items: center; justify-content: center; font-size: 8px;">I</div>
+                        image.png
+                    </li>
+                    <li class="file-item" data-file="notes.txt">
+                        <div style="width: 16px; height: 16px; background: #fff; border: 1px solid #000; margin-right: 8px; display: flex; align-items: center; justify-content: center; font-size: 8px;">T</div>
+                        notes.txt
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Paint App Window -->
+        <div id="paint-window" class="window hidden" style="top: 250px; left: 300px; width: 600px; height: 500px;">
+            <div class="window-header">
+                <div class="window-title">Paint</div>
+                <div class="window-controls">
+                    <div class="window-control" onclick="minimizeWindow('paint-window')">-</div>
+                    <div class="window-control" onclick="closeWindow('paint-window')">×</div>
+                </div>
+            </div>
+            <div class="window-content">
+                <div style="margin-bottom: 16px;">
+                    <button class="btn" onclick="clearCanvas()">Clear</button>
+                    <button class="btn" onclick="saveCanvas()">Save</button>
+                    <input type="color" id="paint-color" value="#000000" style="width: 40px; height: 30px;">
+                </div>
+                <canvas id="paint-canvas" width="550" height="400" style="border: 2px solid #000; cursor: crosshair;"></canvas>
+            </div>
+        </div>
+        
+                    <!-- To-Do App Window -->
             <div id="todo-window" class="window hidden" style="top: 300px; left: 150px; width: 400px; height: 350px;">
                 <div class="window-header">
                     <div class="window-title">To-Do List</div>
@@ -629,6 +840,60 @@
                             <button class="btn" style="margin-left: auto; padding: 2px 6px; font-size: 10px;" onclick="this.parentElement.remove()">×</button>
                         </li>
                     </ul>
+                </div>
+            </div>
+            
+            <!-- Terminal Window -->
+            <div id="terminal-window" class="window hidden" style="top: 350px; left: 50px; width: 600px; height: 400px;">
+                <div class="window-header">
+                    <div class="window-title">Terminal</div>
+                    <div class="window-controls">
+                        <div class="window-control" onclick="minimizeWindow('terminal-window')">-</div>
+                        <div class="window-control" onclick="closeWindow('terminal-window')">×</div>
+                    </div>
+                </div>
+                <div class="window-content" style="background: #000; color: #00ff00; font-family: 'Courier New', monospace; padding: 8px;">
+                    <div id="terminal-output" style="height: 300px; overflow-y: auto; margin-bottom: 8px;">
+                        <div>Welcome to Macintosh Terminal v1.0</div>
+                        <div>Type 'help' for available commands</div>
+                        <div style="margin-top: 8px;"></div>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span style="color: #00ff00;">$ </span>
+                        <input type="text" id="terminal-input" style="background: transparent; color: #00ff00; border: none; outline: none; flex: 1; margin-left: 4px; font-family: 'Courier New', monospace;" placeholder="Enter command...">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- System Preferences Window -->
+            <div id="preferences-window" class="window hidden" style="top: 400px; left: 200px; width: 500px; height: 400px;">
+                <div class="window-header">
+                    <div class="window-title">System Preferences</div>
+                    <div class="window-controls">
+                        <div class="window-control" onclick="minimizeWindow('preferences-window')">-</div>
+                        <div class="window-control" onclick="closeWindow('preferences-window')">×</div>
+                    </div>
+                </div>
+                <div class="window-content">
+                    <h3>System Settings</h3>
+                    <div style="margin: 16px 0;">
+                        <label style="display: block; margin-bottom: 8px;">
+                            <input type="checkbox" id="scanlines-toggle" checked> Enable Scanlines
+                        </label>
+                        <label style="display: block; margin-bottom: 8px;">
+                            <input type="checkbox" id="crt-toggle" checked> Enable CRT Effect
+                        </label>
+                        <label style="display: block; margin-bottom: 8px;">
+                            <input type="checkbox" id="animations-toggle" checked> Enable Animations
+                        </label>
+                    </div>
+                    <div style="margin: 16px 0;">
+                        <label style="display: block; margin-bottom: 8px;">
+                            Desktop Color: <input type="color" id="desktop-color" value="#c0c0c0">
+                        </label>
+                    </div>
+                    <button class="btn" onclick="applyPreferences()">Apply</button>
+                    <button class="btn" onclick="resetPreferences()">Reset to Defaults</button>
                 </div>
             </div>
         </div>
@@ -912,8 +1177,19 @@
             }
         });
         
-        // Initialize
+        // Initialize with startup sequence
         window.addEventListener('load', function() {
+            // Startup sequence
+            setTimeout(() => {
+                document.getElementById('startup-sound').style.opacity = '1';
+                setTimeout(() => {
+                    document.getElementById('startup-sound').style.opacity = '0';
+                }, 1000);
+            }, 500);
+            
+            // Add startup animation to welcome message
+            document.querySelector('.welcome-message').classList.add('startup-animation');
+            
             // Set current time
             const now = new Date();
             const timeString = now.toLocaleTimeString('en-US', { 
@@ -933,6 +1209,244 @@
                 });
                 document.querySelector('.menu-bar .menu-item:last-child').textContent = timeString;
             }, 60000);
+            
+            // Add blinking cursor effect to text inputs
+            addBlinkingCursor();
+            
+            // Initialize retro effects
+            initRetroEffects();
+        });
+        
+        // Add blinking cursor to text inputs
+        function addBlinkingCursor() {
+            const textInputs = document.querySelectorAll('input[type="text"], textarea');
+            textInputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.style.borderRight = '2px solid #000';
+                    this.style.animation = 'blink 0.4s linear infinite';
+                });
+                input.addEventListener('blur', function() {
+                    this.style.borderRight = 'none';
+                    this.style.animation = 'none';
+                });
+            });
+        }
+        
+        // Initialize retro effects
+        function initRetroEffects() {
+            // Add subtle scanline movement
+            setInterval(() => {
+                const scanlines = document.querySelector('.scanlines');
+                if (scanlines) {
+                    scanlines.style.animation = 'none';
+                    scanlines.offsetHeight; // Trigger reflow
+                    scanlines.style.animation = 'scanlines 0.1s linear infinite';
+                }
+            }, 100);
+            
+            // Add CRT flicker effect
+            setInterval(() => {
+                const crtEffect = document.querySelector('.crt-effect');
+                if (crtEffect) {
+                    crtEffect.style.opacity = Math.random() * 0.1 + 0.05;
+                }
+            }, 50);
+        }
+        
+        // Enhanced window opening with animation
+        function openApp(appName) {
+            const windowId = appName + '-window';
+            const window = document.getElementById(windowId);
+            if (window) {
+                window.classList.remove('hidden');
+                window.classList.add('window-opening');
+                bringToFront(window);
+                
+                // Remove animation class after animation completes
+                setTimeout(() => {
+                    window.classList.remove('window-opening');
+                }, 300);
+            }
+        }
+        
+        // Enhanced window focus
+        function bringToFront(window) {
+            const allWindows = document.querySelectorAll('.window:not(.hidden)');
+            allWindows.forEach(w => {
+                w.style.zIndex = '1';
+                w.classList.remove('focused');
+            });
+            window.style.zIndex = '10';
+            window.classList.add('focused');
+        }
+        
+        // Add scanlines animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes scanlines {
+                0% { transform: translateY(0); }
+                100% { transform: translateY(4px); }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Terminal functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const terminalInput = document.getElementById('terminal-input');
+            const terminalOutput = document.getElementById('terminal-output');
+            
+            if (terminalInput) {
+                terminalInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        const command = this.value.trim();
+                        if (command) {
+                            executeCommand(command);
+                            this.value = '';
+                        }
+                    }
+                });
+            }
+        });
+        
+        function executeCommand(command) {
+            const terminalOutput = document.getElementById('terminal-output');
+            const output = document.createElement('div');
+            output.style.marginBottom = '4px';
+            
+            switch (command.toLowerCase()) {
+                case 'help':
+                    output.innerHTML = `
+                        Available commands:<br>
+                        - help: Show this help<br>
+                        - clear: Clear terminal<br>
+                        - date: Show current date<br>
+                        - whoami: Show user info<br>
+                        - ls: List files<br>
+                        - echo [text]: Display text
+                    `;
+                    break;
+                case 'clear':
+                    terminalOutput.innerHTML = '';
+                    return;
+                case 'date':
+                    output.textContent = new Date().toString();
+                    break;
+                case 'whoami':
+                    output.textContent = 'retro-mac-user';
+                    break;
+                case 'ls':
+                    output.innerHTML = `
+                        Desktop:<br>
+                        - System Disk<br>
+                        - Welcome!<br>
+                        - Notes<br>
+                        - Calculator<br>
+                        - Files<br>
+                        - Paint<br>
+                        - To-Do<br>
+                        - Terminal<br>
+                        - Preferences<br>
+                        - Trash
+                    `;
+                    break;
+                case 'echo':
+                    output.textContent = command.substring(5);
+                    break;
+                default:
+                    output.textContent = `Command not found: ${command}. Type 'help' for available commands.`;
+            }
+            
+            terminalOutput.appendChild(output);
+            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+        }
+        
+        // System Preferences functionality
+        function applyPreferences() {
+            const scanlinesToggle = document.getElementById('scanlines-toggle');
+            const crtToggle = document.getElementById('crt-toggle');
+            const animationsToggle = document.getElementById('animations-toggle');
+            const desktopColor = document.getElementById('desktop-color');
+            
+            // Apply scanlines
+            const scanlines = document.querySelector('.scanlines');
+            if (scanlines) {
+                scanlines.style.display = scanlinesToggle.checked ? 'block' : 'none';
+            }
+            
+            // Apply CRT effect
+            const crtEffect = document.querySelector('.crt-effect');
+            if (crtEffect) {
+                crtEffect.style.display = crtToggle.checked ? 'block' : 'none';
+            }
+            
+            // Apply animations
+            if (animationsToggle.checked) {
+                document.body.style.setProperty('--animation-duration', '0.3s');
+            } else {
+                document.body.style.setProperty('--animation-duration', '0s');
+            }
+            
+            // Apply desktop color
+            const desktop = document.querySelector('.desktop');
+            if (desktop) {
+                desktop.style.background = desktopColor.value;
+            }
+            
+            alert('Preferences applied!');
+        }
+        
+        function resetPreferences() {
+            // Reset toggles
+            document.getElementById('scanlines-toggle').checked = true;
+            document.getElementById('crt-toggle').checked = true;
+            document.getElementById('animations-toggle').checked = true;
+            document.getElementById('desktop-color').value = '#c0c0c0';
+            
+            // Apply reset
+            applyPreferences();
+        }
+        
+        // Enhanced desktop interactions
+        document.addEventListener('dblclick', function(e) {
+            if (e.target.closest('.desktop-icon')) {
+                const icon = e.target.closest('.desktop-icon');
+                const appName = icon.getAttribute('onclick').match(/openApp\('([^']+)'\)/)[1];
+                openApp(appName);
+            }
+        });
+        
+        // Add right-click context menu (simulated)
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            if (e.target.closest('.desktop-icon')) {
+                const icon = e.target.closest('.desktop-icon');
+                icon.classList.add('selected');
+                setTimeout(() => icon.classList.remove('selected'), 1000);
+            }
+        });
+        
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch (e.key) {
+                    case 'n':
+                        e.preventDefault();
+                        openApp('notes');
+                        break;
+                    case 'c':
+                        e.preventDefault();
+                        openApp('calculator');
+                        break;
+                    case 'f':
+                        e.preventDefault();
+                        openApp('files');
+                        break;
+                    case 't':
+                        e.preventDefault();
+                        openApp('terminal');
+                        break;
+                }
+            }
         });
     </script>
 </body>
