@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Macintosh System 7</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #2b4b8c;
+            color: #000;
+            overflow: hidden;
+            user-select: none;
+            cursor: default;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        /* Monitor Frame */
+        .monitor-frame {
+            background: #f4f1e8;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 
+                0 0 0 8px #d4c8b8,
+                0 0 0 12px #f4f1e8,
+                0 20px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        
+        .monitor-frame::before {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 30px;
+            background: #d4c8b8;
+            border-radius: 0 0 60px 60px;
+        }
+        
+        /* Apple Logo and Home Link */
+        .monitor-branding {
+            position: absolute;
+            bottom: 15px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 10px;
+            color: #666;
+        }
+        
+        .apple-logo {
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(45deg, #ff0000, #ff8000, #ffff00, #00ff00, #0080ff, #8000ff);
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        /* Power Indicator */
+        .power-indicator {
+            position: absolute;
+            bottom: 15px;
+            right: 20px;
+            width: 12px;
+            height: 12px;
+            background: #00ff00;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #00ff00;
+        }
+        
+        /* Classic Mac Desktop */
+        .desktop {
+            width: 800px;
+            height: 600px;
+            background: #c0c0c0;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #000;
+            box-shadow: inset 2px 2px 0 #fff, inset -2px -2px 0 #808080;
+        }
+        
+        /* Menu Bar */
+        .menu-bar {
+            height: 20px;
+            background: #c0c0c0;
+            color: #000;
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+            font-size: 12px;
+            font-weight: bold;
+            border-bottom: 2px solid #000;
+            box-shadow: inset 1px 1px 0 #fff;
+        }
+        
+        .menu-item {
+            margin-right: 20px;
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+        
+        .menu-item:hover {
+            background: #000;
+            color: #fff;
+        }
+        
+        .apple-menu {
+            font-size: 14px;
+            margin-right: 15px;
+        }
+        
+        /* Desktop Icons */
+        .desktop-icon {
+            position: absolute;
+            width: 70px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 10px;
+            color: #000;
+            padding: 4px;
+            border-radius: 2px;
+        }
+        
+        .desktop-icon:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+        
+        .desktop-icon.selected {
+            background: rgba(0, 0, 255, 0.3);
+            color: #fff;
+        }
+        
+        .desktop-icon img {
+            width: 32px;
+            height: 32px;
+            margin-bottom: 4px;
+            image-rendering: pixelated;
+        }
+        
+        /* Classic Mac Icons */
+        .icon-system-disk {
+            width: 32px;
+            height: 32px;
+            background: #fff;
+            border: 2px solid #000;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            margin: 0 auto 4px auto;
+        }
+        
+        .icon-welcome {
+            width: 32px;
+            height: 32px;
+            background: #fff;
+            border: 2px solid #000;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            margin: 0 auto 4px auto;
+        }
+        
+        .icon-trash {
+            width: 32px;
+            height: 32px;
+            background: #fff;
+            border: 2px solid #000;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            margin: 0 auto 4px auto;
+        }
+        
+        /* Windows */
+        .window {
+            position: absolute;
+            background: #c0c0c0;
+            color: #000;
+            border: 2px solid #000;
+            border-radius: 0;
+            min-width: 300px;
+            min-height: 200px;
+            box-shadow: 
+                inset 1px 1px 0 #fff,
+                inset -1px -1px 0 #808080,
+                4px 4px 0 rgba(0, 0, 0, 0.5);
+        }
+        
+        .window-header {
+            height: 20px;
+            background: #000;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 8px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: move;
+            box-shadow: inset 1px 1px 0 #808080;
+        }
+        
+        .window-title {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .window-controls {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .window-control {
+            width: 12px;
+            height: 12px;
+            background: #c0c0c0;
+            border: 1px solid #000;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            color: #000;
+            box-shadow: inset 1px 1px 0 #fff;
+        }
+        
+        .window-control:hover {
+            background: #fff;
+        }
+        
+        .window-content {
+            padding: 16px;
+            height: calc(100% - 20px);
+            overflow: auto;
+            background: #fff;
+            box-shadow: inset 1px 1px 0 #808080;
+        }
+        
+        /* Buttons */
+        .btn {
+            background: #c0c0c0;
+            color: #000;
+            border: 2px solid #000;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            font-family: inherit;
+            margin: 4px;
+            box-shadow: 
+                inset 1px 1px 0 #fff,
+                inset -1px -1px 0 #808080;
+        }
+        
+        .btn:hover {
+            background: #fff;
+        }
+        
+        .btn:active {
+            box-shadow: 
+                inset -1px -1px 0 #fff,
+                inset 1px 1px 0 #808080;
+            transform: translate(1px, 1px);
+        }
+        
+        /* Input fields */
+        input, textarea {
+            background: #fff;
+            color: #000;
+            border: 2px solid #000;
+            padding: 4px 8px;
+            font-size: 12px;
+            font-family: inherit;
+            margin: 4px 0;
+            box-shadow: inset 1px 1px 0 #808080;
+        }
+        
+        /* Trash Can */
+        .trash-can {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 70px;
+            text-align: center;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 2px;
+        }
+        
+        .trash-can:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+        
+        /* App-specific styles */
+        .notes-app textarea {
+            width: 100%;
+            height: 200px;
+            resize: none;
+        }
+        
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 4px;
+            margin-top: 16px;
+        }
+        
+        .calculator-display {
+            grid-column: 1 / -1;
+            background: #000;
+            color: #fff;
+            padding: 8px;
+            text-align: right;
+            font-size: 18px;
+            margin-bottom: 8px;
+            border: 2px solid #000;
+        }
+        
+        .file-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .file-item {
+            padding: 8px;
+            border-bottom: 1px solid #000;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        
+        .file-item:hover {
+            background: #000;
+            color: #fff;
+        }
+        
+        .file-item img {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            image-rendering: pixelated;
+        }
+        
+        /* Hidden class */
+        .hidden {
+            display: none;
+        }
+        
+        /* Drag and drop */
+        .dragging {
+            opacity: 0.5;
+        }
+        
+        .drag-over {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Welcome Message */
+        .welcome-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #000;
+            font-size: 18px;
+            font-weight: bold;
+            text-shadow: 1px 1px 0 #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="monitor-frame">
+        <!-- Apple Logo and Home Link -->
+        <div class="monitor-branding">
+            <div class="apple-logo"></div>
+            <span>&lt; Home</span>
+        </div>
+        
+        <!-- Power Indicator -->
+        <div class="power-indicator"></div>
+        
+        <div class="desktop">
+            <!-- Menu Bar -->
+            <div class="menu-bar">
+                <div class="menu-item apple-menu">🍎</div>
+                <div class="menu-item">File</div>
+                <div class="menu-item">Edit</div>
+                <div class="menu-item">View</div>
+                <div class="menu-item">Special</div>
+                <div style="margin-left: auto;">12:00 PM</div>
+            </div>
+            
+            <!-- Welcome Message -->
+            <div class="welcome-message">Welcome to Macintosh!</div>
+            
+            <!-- Desktop Icons -->
+            <div class="desktop-icon" style="top: 40px; right: 20px;" onclick="openApp('system')">
+                <div class="icon-system-disk">💾</div>
+                System Disk
+            </div>
+            
+            <div class="desktop-icon" style="top: 120px; right: 20px;" onclick="openApp('welcome')">
+                <div class="icon-welcome">📄</div>
+                Welcome!
+            </div>
+            
+            <!-- Trash Can -->
+            <div class="trash-can" onclick="emptyTrash()">
+                <div class="icon-trash">🗑️</div>
+                Trash
+            </div>
+            
+            <!-- Additional App Icons -->
+            <div class="desktop-icon" style="top: 40px; left: 20px;" onclick="openApp('notes')">
+                <div class="icon-welcome">📝</div>
+                Notes
+            </div>
+            
+            <div class="desktop-icon" style="top: 40px; left: 100px;" onclick="openApp('calculator')">
+                <div class="icon-welcome">🧮</div>
+                Calculator
+            </div>
+            
+            <div class="desktop-icon" style="top: 40px; left: 180px;" onclick="openApp('files')">
+                <div class="icon-welcome">📁</div>
+                Files
+            </div>
+            
+            <div class="desktop-icon" style="top: 120px; left: 20px;" onclick="openApp('paint')">
+                <div class="icon-welcome">🎨</div>
+                Paint
+            </div>
+            
+            <div class="desktop-icon" style="top: 120px; left: 100px;" onclick="openApp('todo')">
+                <div class="icon-welcome">✅</div>
+                To-Do
+            </div>
+            
+            <!-- System Disk Window -->
+            <div id="system-window" class="window hidden" style="top: 100px; left: 100px; width: 400px; height: 300px;">
+                <div class="window-header">
+                    <div class="window-title">System Disk</div>
+                    <div class="window-controls">
+                        <div class="window-control" onclick="minimizeWindow('system-window')">-</div>
+                        <div class="window-control" onclick="closeWindow('system-window')">×</div>
+                    </div>
+                </div>
+                <div class="window-content">
+                    <h3>System Folder Contents:</h3>
+                    <ul style="margin-top: 16px; padding-left: 20px;">
+                        <li>System</li>
+                        <li>Finder</li>
+                        <li>Control Panel</li>
+                        <li>Extensions</li>
+                        <li>Preferences</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Welcome Window -->
+            <div id="welcome-window" class="window hidden" style="top: 150px; left: 200px; width: 350px; height: 250px;">
+                <div class="window-header">
+                    <div class="window-title">Welcome!</div>
+                    <div class="window-controls">
+                        <div class="window-control" onclick="minimizeWindow('welcome-window')">-</div>
+                        <div class="window-control" onclick="closeWindow('welcome-window')">×</div>
+                    </div>
+                </div>
+                <div class="window-content">
+                    <h3>Welcome to Macintosh!</h3>
+                    <p style="margin: 16px 0; line-height: 1.4;">
+                        You've just taken your first step into a new world of computing. 
+                        The Macintosh makes it easy to learn and fun to use.
+                    </p>
+                    <p style="margin: 16px 0; line-height: 1.4;">
+                        To get started, try clicking on some of the icons on your desktop.
+                        You can also explore the menu bar at the top of the screen.
+                    </p>
+                    <button class="btn" onclick="closeWindow('welcome-window')">OK</button>
+                </div>
+            </div>
+            
+            <!-- Notes App Window -->
+            <div id="notes-window" class="window hidden" style="top: 100px; left: 100px; width: 400px; height: 300px;">
+                <div class="window-header">
+                    <div class="window-title">Notes</div>
+                    <div class="window-controls">
+                        <div class="window-control" onclick="minimizeWindow('notes-window')">-</div>
+                        <div class="window-control" onclick="closeWindow('notes-window')">×</div>
+                    </div>
+                </div>
+                <div class="window-content notes-app">
+                    <textarea id="notes-text" placeholder="Start typing your notes here..."></textarea>
+                    <div style="margin-top: 16px;">
+                        <button class="btn" onclick="saveNotes()">Save</button>
+                        <button class="btn" onclick="clearNotes()">Clear</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Calculator App Window -->
+            <div id="calculator-window" class="window hidden" style="top: 150px; left: 200px; width: 300px; height: 400px;">
+                <div class="window-header">
+                    <div class="window-title">Calculator</div>
+                    <div class="window-controls">
+                        <div class="window-control" onclick="minimizeWindow('calculator-window')">-</div>
+                        <div class="window-control" onclick="closeWindow('calculator-window')">×</div>
+                    </div>
+                </div>
+                <div class="window-content">
+                    <div class="calculator-display" id="calc-display">0</div>
+                    <div class="calculator-grid">
+                        <button class="btn" onclick="calcClear()">C</button>
+                        <button class="btn" onclick="calcDelete()">⌫</button>
+                        <button class="btn" onclick="calcOperator('/')">/</button>
+                        <button class="btn" onclick="calcOperator('*')">×</button>
+                        
+                        <button class="btn" onclick="calcNumber('7')">7</button>
+                        <button class="btn" onclick="calcNumber('8')">8</button>
+                        <button class="btn" onclick="calcNumber('9')">9</button>
+                        <button class="btn" onclick="calcOperator('-')">-</button>
+                        
+                        <button class="btn" onclick="calcNumber('4')">4</button>
+                        <button class="btn" onclick="calcNumber('5')">5</button>
+                        <button class="btn" onclick="calcNumber('6')">6</button>
+                        <button class="btn" onclick="calcOperator('+')">+</button>
+                        
+                        <button class="btn" onclick="calcNumber('1')">1</button>
+                        <button class="btn" onclick="calcNumber('2')">2</button>
+                        <button class="btn" onclick="calcNumber('3')">3</button>
+                        <button class="btn" onclick="calcEquals()" style="grid-row: span 2;">=</button>
+                        
+                        <button class="btn" onclick="calcNumber('0')" style="grid-column: span 2;">0</button>
+                        <button class="btn" onclick="calcNumber('.')">.</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Files App Window -->
+            <div id="files-window" class="window hidden" style="top: 200px; left: 50px; width: 500px; height: 400px;">
+                <div class="window-header">
+                    <div class="window-title">Files</div>
+                    <div class="window-controls">
+                        <div class="window-control" onclick="minimizeWindow('files-window')">-</div>
+                        <div class="window-control" onclick="closeWindow('files-window')">×</div>
+                    </div>
+                </div>
+                <div class="window-content">
+                    <div style="margin-bottom: 16px;">
+                        <button class="btn" onclick="createNewFile()">New File</button>
+                        <button class="btn" onclick="deleteSelectedFile()">Delete</button>
+                    </div>
+                    <ul class="file-list" id="file-list">
+                        <li class="file-item" data-file="document.txt">
+                            <div style="width: 16px; height: 16px; background: #fff; border: 1px solid #000; margin-right: 8px; display: flex; align-items: center; justify-content: center; font-size: 8px;">T</div>
+                            document.txt
+                        </li>
+                        <li class="file-item" data-file="image.png">
+                            <div style="width: 16px; height: 16px; background: #fff; border: 1px solid #000; margin-right: 8px; display: flex; align-items: center; justify-content: center; font-size: 8px;">I</div>
+                            image.png
+                        </li>
+                        <li class="file-item" data-file="notes.txt">
+                            <div style="width: 16px; height: 16px; background: #fff; border: 1px solid #000; margin-right: 8px; display: flex; align-items: center; justify-content: center; font-size: 8px;">T</div>
+                            notes.txt
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Paint App Window -->
+            <div id="paint-window" class="window hidden" style="top: 250px; left: 300px; width: 600px; height: 500px;">
+                <div class="window-header">
+                    <div class="window-title">Paint</div>
+                    <div class="window-controls">
+                        <div class="window-control" onclick="minimizeWindow('paint-window')">-</div>
+                        <div class="window-control" onclick="closeWindow('paint-window')">×</div>
+                    </div>
+                </div>
+                <div class="window-content">
+                    <div style="margin-bottom: 16px;">
+                        <button class="btn" onclick="clearCanvas()">Clear</button>
+                        <button class="btn" onclick="saveCanvas()">Save</button>
+                        <input type="color" id="paint-color" value="#000000" style="width: 40px; height: 30px;">
+                    </div>
+                    <canvas id="paint-canvas" width="550" height="400" style="border: 2px solid #000; cursor: crosshair;"></canvas>
+                </div>
+            </div>
+            
+            <!-- To-Do App Window -->
+            <div id="todo-window" class="window hidden" style="top: 300px; left: 150px; width: 400px; height: 350px;">
+                <div class="window-header">
+                    <div class="window-title">To-Do List</div>
+                    <div class="window-controls">
+                        <div class="window-control" onclick="minimizeWindow('todo-window')">-</div>
+                        <div class="window-control" onclick="closeWindow('todo-window')">×</div>
+                    </div>
+                </div>
+                <div class="window-content">
+                    <div style="margin-bottom: 16px;">
+                        <input type="text" id="todo-input" placeholder="Add new task..." style="width: 250px;">
+                        <button class="btn" onclick="addTodo()">Add</button>
+                    </div>
+                    <ul id="todo-list" style="list-style: none; margin: 0; padding: 0;">
+                        <li style="padding: 8px; border-bottom: 1px solid #000; display: flex; align-items: center;">
+                            <input type="checkbox" style="margin-right: 8px;">
+                            <span>Welcome to Retro Mac!</span>
+                            <button class="btn" style="margin-left: auto; padding: 2px 6px; font-size: 10px;" onclick="this.parentElement.remove()">×</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentCalcValue = '0';
+        let calcOperation = null;
+        let calcPreviousValue = null;
+        let isDrawing = false;
+        let selectedFile = null;
+        
+        // App management
+        function openApp(appName) {
+            const windowId = appName + '-window';
+            const window = document.getElementById(windowId);
+            if (window) {
+                window.classList.remove('hidden');
+                bringToFront(window);
+            }
+        }
+        
+        function closeWindow(windowId) {
+            const window = document.getElementById(windowId);
+            if (window) {
+                window.classList.add('hidden');
+            }
+        }
+        
+        function minimizeWindow(windowId) {
+            const window = document.getElementById(windowId);
+            if (window) {
+                window.classList.add('hidden');
+            }
+        }
+        
+        function bringToFront(window) {
+            const allWindows = document.querySelectorAll('.window:not(.hidden)');
+            allWindows.forEach(w => w.style.zIndex = '1');
+            window.style.zIndex = '10';
+        }
+        
+        // Window dragging
+        document.querySelectorAll('.window-header').forEach(header => {
+            header.addEventListener('mousedown', function(e) {
+                const window = this.parentElement;
+                bringToFront(window);
+                
+                let isDragging = true;
+                let currentX = e.clientX - window.offsetLeft;
+                let currentY = e.clientY - window.offsetTop;
+                
+                function onMouseMove(e) {
+                    if (isDragging) {
+                        window.style.left = (e.clientX - currentX) + 'px';
+                        window.style.top = (e.clientY - currentY) + 'px';
+                    }
+                }
+                
+                function onMouseUp() {
+                    isDragging = false;
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', onMouseUp);
+                }
+                
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            });
+        });
+        
+        // Notes app
+        function saveNotes() {
+            const notes = document.getElementById('notes-text').value;
+            localStorage.setItem('retroMacNotes', notes);
+            alert('Notes saved!');
+        }
+        
+        function clearNotes() {
+            if (confirm('Clear all notes?')) {
+                document.getElementById('notes-text').value = '';
+            }
+        }
+        
+        // Load saved notes
+        window.addEventListener('load', function() {
+            const savedNotes = localStorage.getItem('retroMacNotes');
+            if (savedNotes) {
+                document.getElementById('notes-text').value = savedNotes;
+            }
+        });
+        
+        // Calculator app
+        function calcNumber(num) {
+            if (currentCalcValue === '0' && num !== '.') {
+                currentCalcValue = num;
+            } else {
+                currentCalcValue += num;
+            }
+            document.getElementById('calc-display').textContent = currentCalcValue;
+        }
+        
+        function calcOperator(op) {
+            calcPreviousValue = parseFloat(currentCalcValue);
+            calcOperation = op;
+            currentCalcValue = '0';
+        }
+        
+        function calcEquals() {
+            if (calcOperation && calcPreviousValue !== null) {
+                const current = parseFloat(currentCalcValue);
+                let result;
+                
+                switch (calcOperation) {
+                    case '+': result = calcPreviousValue + current; break;
+                    case '-': result = calcPreviousValue - current; break;
+                    case '*': result = calcPreviousValue * current; break;
+                    case '/': result = calcPreviousValue / current; break;
+                }
+                
+                currentCalcValue = result.toString();
+                document.getElementById('calc-display').textContent = currentCalcValue;
+                calcOperation = null;
+                calcPreviousValue = null;
+            }
+        }
+        
+        function calcClear() {
+            currentCalcValue = '0';
+            calcOperation = null;
+            calcPreviousValue = null;
+            document.getElementById('calc-display').textContent = currentCalcValue;
+        }
+        
+        function calcDelete() {
+            if (currentCalcValue.length > 1) {
+                currentCalcValue = currentCalcValue.slice(0, -1);
+            } else {
+                currentCalcValue = '0';
+            }
+            document.getElementById('calc-display').textContent = currentCalcValue;
+        }
+        
+        // Paint app
+        const canvas = document.getElementById('paint-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set initial canvas state
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+        
+        function startDrawing(e) {
+            isDrawing = true;
+            draw(e);
+        }
+        
+        function draw(e) {
+            if (!isDrawing) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = document.getElementById('paint-color').value;
+            
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+        
+        function stopDrawing() {
+            isDrawing = false;
+            ctx.beginPath();
+        }
+        
+        function clearCanvas() {
+            if (confirm('Clear canvas?')) {
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+        
+        function saveCanvas() {
+            const link = document.createElement('a');
+            link.download = 'retro-mac-paint.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+        
+        // Files app
+        function createNewFile() {
+            const fileName = prompt('Enter file name:');
+            if (fileName) {
+                const fileList = document.getElementById('file-list');
+                const newFile = document.createElement('li');
+                newFile.className = 'file-item';
+                newFile.setAttribute('data-file', fileName);
+                newFile.innerHTML = `
+                    <div style="width: 16px; height: 16px; background: #fff; border: 1px solid #000; margin-right: 8px; display: flex; align-items: center; justify-content: center; font-size: 8px;">F</div>
+                    ${fileName}
+                `;
+                fileList.appendChild(newFile);
+            }
+        }
+        
+        function deleteSelectedFile() {
+            if (selectedFile) {
+                if (confirm(`Delete ${selectedFile}?`)) {
+                    const fileElement = document.querySelector(`[data-file="${selectedFile}"]`);
+                    if (fileElement) {
+                        fileElement.remove();
+                        selectedFile = null;
+                    }
+                }
+            } else {
+                alert('Please select a file first');
+            }
+        }
+        
+        // File selection
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.file-item')) {
+                document.querySelectorAll('.file-item').forEach(item => {
+                    item.style.background = '';
+                    item.style.color = '';
+                });
+                e.target.closest('.file-item').style.background = '#000';
+                e.target.closest('.file-item').style.color = '#fff';
+                selectedFile = e.target.closest('.file-item').getAttribute('data-file');
+            }
+        });
+        
+        // To-Do app
+        function addTodo() {
+            const input = document.getElementById('todo-input');
+            const text = input.value.trim();
+            
+            if (text) {
+                const todoList = document.getElementById('todo-list');
+                const newTodo = document.createElement('li');
+                newTodo.style.cssText = 'padding: 8px; border-bottom: 1px solid #000; display: flex; align-items: center;';
+                newTodo.innerHTML = `
+                    <input type="checkbox" style="margin-right: 8px;">
+                    <span>${text}</span>
+                    <button class="btn" style="margin-left: auto; padding: 2px 6px; font-size: 10px;" onclick="this.parentElement.remove()">×</button>
+                `;
+                todoList.appendChild(newTodo);
+                input.value = '';
+            }
+        }
+        
+        // Enter key for todo input
+        document.getElementById('todo-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTodo();
+            }
+        });
+        
+        // Trash can
+        function emptyTrash() {
+            if (confirm('Empty trash? This action cannot be undone.')) {
+                alert('Trash emptied!');
+            }
+        }
+        
+        // Desktop icon selection
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.desktop-icon')) {
+                document.querySelectorAll('.desktop-icon').forEach(icon => {
+                    icon.classList.remove('selected');
+                });
+                e.target.closest('.desktop-icon').classList.add('selected');
+            }
+        });
+        
+        // Initialize
+        window.addEventListener('load', function() {
+            // Set current time
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit',
+                hour12: true 
+            });
+            document.querySelector('.menu-bar .menu-item:last-child').textContent = timeString;
+            
+            // Update time every minute
+            setInterval(function() {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('en-US', { 
+                    hour: 'numeric', 
+                    minute: '2-digit',
+                    hour12: true 
+                });
+                document.querySelector('.menu-bar .menu-item:last-child').textContent = timeString;
+            }, 60000);
+        });
+    </script>
+</body>
+</html>
+
