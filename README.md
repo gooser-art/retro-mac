@@ -21,7 +21,7 @@ A nostalgic web-based recreation of the classic Macintosh System 7 interface, co
 - **Terminal** - Command-line interface with classic commands
 - **System Preferences** - Customize scanlines, CRT effects, and desktop color
 
-### Retro Games 🎮
+### Retro Games 
 - **Ping Pong** - Classic two-player paddle game
   - Controls: W/S keys for left paddle, Arrow keys for right paddle
   - Features scoring system and authentic retro graphics
@@ -34,7 +34,7 @@ A nostalgic web-based recreation of the classic Macintosh System 7 interface, co
   - Controls: Arrow keys to move/rotate, Space to drop
   - Features next piece preview and level progression
 
-### Steve Jobs Tribute 🍎
+### Steve Jobs Tribute 
 - Special desktop icon featuring Steve Jobs' image
 - Click to open tribute window with loading message "A Homage to Steve Jobs"
 - Displays Steve's image, famous quote, and biographical information
