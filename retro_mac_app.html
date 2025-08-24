@@ -7,6 +7,14 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
         
+        
+        @font-face {
+            font-family: 'Chicago';
+            src: local('Chicago'), local('Monaco'), local('Menlo'), local('Courier New'), monospace;
+            font-weight: normal;
+            font-style: normal;
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -631,9 +639,157 @@
             from, to { border-color: transparent; }
             50% { border-color: #000; }
         }
+        
+        /* Classic Mac Boot Animation */
+        .boot-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            font-family: 'Chicago', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .boot-loading-bar {
+            width: 300px;
+            height: 20px;
+            border: 2px solid #fff;
+            margin: 20px auto;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .boot-loading-progress {
+            width: 0%;
+            height: 100%;
+            background-color: #fff;
+            animation: bootLoad 3s linear forwards;
+        }
+        
+        .boot-hello {
+            font-size: 48px;
+            opacity: 0;
+            animation: bootHello 2s ease-in-out 3s forwards;
+            text-align: center;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        .boot-hello::after {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 48px;
+            background: #fff;
+            margin-left: 6px;
+            animation: bootBlink 0.75s step-end infinite;
+            animation-delay: 5s;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+        
+        @keyframes bootLoad {
+            to {
+                width: 100%;
+            }
+        }
+        
+        @keyframes bootHello {
+            0% { 
+                opacity: 0; 
+                transform: scale(0.8);
+            }
+            50% { 
+                opacity: 0.7; 
+                transform: scale(1.1);
+            }
+            100% { 
+                opacity: 1; 
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes bootBlink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        /* Boot screen fade out */
+        .boot-screen.fade-out {
+            animation: bootFadeOut 1s ease-in-out forwards;
+        }
+        
+        @keyframes bootFadeOut {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+        
+        /* Boot screen scanlines for authenticity */
+        .boot-screen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                transparent 50%, 
+                rgba(255, 255, 255, 0.03) 50%
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        /* Clean Classic Mac Cursor Styles */
+        .desktop-icon, .menu-item, .btn, .window-control, .trash-can {
+            cursor: pointer;
+        }
+        
+        input, textarea {
+            cursor: text;
+        }
+        
+        .window-header {
+            cursor: move;
+        }
+        
+        body {
+            cursor: crosshair;
+        }
+        
+        
+        .desktop-icon, .menu-item, .btn, .window-control, .trash-can {
+            cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAdgAAAHYBTnsmCAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAFaSURBVCiRpZM9SwNBEIafgwQSCxsLwcJCG1sLG1sLG1sLG1sLG1sLG1sLG1sLGxsLGxsLGxsLGxsLGxsLGxsLGxsLGxsLGxsLGxsLGxsLGxsL'), pointer;
+        }
+        
+        input, textarea {
+            cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAdgAAAHYBTnsmCAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAFaSURBVCiRpZM9SwNBEIafgwQSCxsLwcJCG1sLG1sLG1sLG1sLG1sLG1sLG1sLGxsLGxsLGxsLGxsLGxsLGxsLGxsLGxsLGxsLGxsLGxsLGxsL'), text;
+        }
+        
+        .window-header {
+            cursor: move;
+        }
     </style>
 </head>
 <body>
+    
+    <div class="boot-screen" id="boot-screen">
+        <div class="boot-loading-bar">
+            <div class="boot-loading-progress"></div>
+        </div>
+        <div class="boot-hello">hello</div>
+    </div>
+    
     <div class="monitor-frame">
         <!-- Apple Logo and Home Link -->
         <div class="monitor-branding">
@@ -663,7 +819,7 @@
             <div class="welcome-message typing-effect">Welcome to Macintosh!</div>
             
                         <!-- Startup Sound Effect -->
-            <div class="startup-sound" id="startup-sound">🔊</div>
+            <div class="startup-sound" id="startup-sound"></div>
             
             <!-- Loading Bar -->
             <div class="loading-bar" id="loading-bar">
@@ -711,6 +867,28 @@
             <div class="desktop-icon" style="top: 120px; left: 100px;" onclick="openApp('todo')">
                 <div class="icon-welcome">✅</div>
                 To-Do
+            </div>
+            
+            
+            <div class="desktop-icon" style="top: 200px; left: 180px;" onclick="openSteveJobsTribute()">
+                <img src="steve.jpg" alt="Steve Jobs" style="width: 32px; height: 32px; border-radius: 4px; object-fit: cover; border: 2px solid #000; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+                Steve Jobs
+            </div>
+            
+        
+            <div class="desktop-icon" style="top: 280px; left: 20px;" onclick="openApp('pingpong')">
+                <div class="icon-welcome">🏓</div>
+                Ping Pong
+            </div>
+            
+            <div class="desktop-icon" style="top: 280px; left: 100px;" onclick="openApp('snake')">
+                <div class="icon-welcome">🐍</div>
+                Snake
+            </div>
+            
+            <div class="desktop-icon" style="top: 280px; left: 180px;" onclick="openApp('tetris')">
+                <div class="icon-welcome">🧩</div>
+                Tetris
             </div>
             
             <!-- Command Prompt Icon -->
@@ -769,7 +947,7 @@
                 </div>
         </div>
         
-        <!-- Notes App Window -->
+    
         <div id="notes-window" class="window hidden" style="top: 100px; left: 100px; width: 400px; height: 300px;">
             <div class="window-header">
                 <div class="window-title">Notes</div>
@@ -950,6 +1128,116 @@
                     </div>
                     <button class="btn" onclick="applyPreferences()">Apply</button>
                     <button class="btn" onclick="resetPreferences()">Reset to Defaults</button>
+                </div>
+            </div>
+            
+        
+            <div id="steve-jobs-window" class="window hidden" style="top: 150px; left: 250px; width: 500px; height: 400px;">
+                <div class="window-header">
+                    <div class="window-title">Steve Jobs - A Homage</div>
+                    <div class="window-controls">
+                        <div class="window-control" onclick="minimizeWindow('steve-jobs-window')">-</div>
+                        <div class="window-control" onclick="closeWindow('steve-jobs-window')">×</div>
+                    </div>
+                </div>
+                <div class="window-content" style="text-align: center;">
+                    <div id="steve-loading" style="font-size: 18px; margin: 20px 0; color: #666;">
+                        A Homage to Steve Jobs
+                    </div>
+                    <img id="steve-image" src="steve.jpg" alt="Steve Jobs" style="width: 300px; height: 300px; object-fit: cover; border: 2px solid #000; margin: 20px 0; display: none;">
+                    <div id="steve-quote" style="font-style: italic; margin: 20px 0; color: #333; display: none;">
+                        "Stay hungry, stay foolish."
+                    </div>
+                    <div id="steve-info" style="text-align: left; margin: 20px 0; display: none;">
+                        <h4>Steve Jobs (1955-2011)</h4>
+                        <p>Co-founder of Apple Inc., visionary entrepreneur, and pioneer of personal computing. His legacy continues to inspire innovation and creativity in technology and design.</p>
+                        <p>Key Contributions:</p>
+                        <ul style="margin-left: 20px;">
+                            <li>Macintosh Computer</li>
+                            <li>iPod, iPhone, iPad</li>
+                            <li>Pixar Animation Studios</li>
+                            <li>Revolutionary User Interface Design</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ping Pong Game Window -->
+            <div id="pingpong-window" class="window hidden" style="top: 100px; left: 150px; width: 600px; height: 400px;">
+                <div class="window-header">
+                    <div class="window-title">Ping Pong</div>
+                    <div class="window-controls">
+                        <div class="window-control" onclick="minimizeWindow('pingpong-window')">-</div>
+                        <div class="window-control" onclick="closeWindow('pingpong-window')">×</div>
+                    </div>
+                </div>
+                <div class="window-content">
+                    <div style="text-align: center; margin-bottom: 16px;">
+                        <button class="btn" onclick="startPingPong()">Start Game</button>
+                        <button class="btn" onclick="pausePingPong()">Pause</button>
+                        <button class="btn" onclick="resetPingPong()">Reset</button>
+                        <span style="margin-left: 20px; font-weight: bold;">Score: <span id="pingpong-score">0</span></span>
+                    </div>
+                    <canvas id="pingpong-canvas" width="550" height="300" style="border: 2px solid #000; background: #000; display: block; margin: 0 auto;"></canvas>
+                    <div style="text-align: center; margin-top: 10px; font-size: 12px; color: #666;">
+                        Use W/S keys to move left paddle, Up/Down arrows for right paddle
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Snake Game Window -->
+            <div id="snake-window" class="window hidden" style="top: 120px; left: 200px; width: 500px; height: 500px;">
+                <div class="window-header">
+                    <div class="window-title">Snake</div>
+                    <div class="window-controls">
+                        <div class="window-control" onclick="minimizeWindow('snake-window')">-</div>
+                        <div class="window-control" onclick="closeWindow('snake-window')">×</div>
+                    </div>
+                </div>
+                <div class="window-content">
+                    <div style="text-align: center; margin-bottom: 16px;">
+                        <button class="btn" onclick="startSnake()">Start Game</button>
+                        <button class="btn" onclick="pauseSnake()">Pause</button>
+                        <button class="btn" onclick="resetSnake()">Reset</button>
+                        <span style="margin-left: 20px; font-weight: bold;">Score: <span id="snake-score">0</span></span>
+                    </div>
+                    <canvas id="snake-canvas" width="450" height="350" style="border: 2px solid #000; background: #000; display: block; margin: 0 auto;"></canvas>
+                    <div style="text-align: center; margin-top: 10px; font-size: 12px; color: #666;">
+                        Use arrow keys to control the snake
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tetris Game Window -->
+            <div id="tetris-window" class="window hidden" style="top: 150px; left: 100px; width: 400px; height: 600px;">
+                <div class="window-header">
+                    <div class="window-title">Tetris</div>
+                    <div class="window-controls">
+                        <div class="window-control" onclick="minimizeWindow('tetris-window')">-</div>
+                        <div class="window-control" onclick="closeWindow('tetris-window')">×</div>
+                    </div>
+                </div>
+                <div class="window-content">
+                    <div style="text-align: center; margin-bottom: 16px;">
+                        <button class="btn" onclick="startTetris()">Start Game</button>
+                        <button class="btn" onclick="pauseTetris()">Pause</button>
+                        <button class="btn" onclick="resetTetris()">Reset</button>
+                    </div>
+                    <div style="display: flex; justify-content: center; gap: 20px;">
+                        <div>
+                            <canvas id="tetris-canvas" width="200" height="400" style="border: 2px solid #000; background: #000;"></canvas>
+                        </div>
+                        <div style="text-align: left;">
+                            <div style="margin-bottom: 10px;"><strong>Score:</strong> <span id="tetris-score">0</span></div>
+                            <div style="margin-bottom: 10px;"><strong>Level:</strong> <span id="tetris-level">1</span></div>
+                            <div style="margin-bottom: 10px;"><strong>Lines:</strong> <span id="tetris-lines">0</span></div>
+                            <div style="margin-bottom: 10px;"><strong>Next:</strong></div>
+                            <canvas id="tetris-next" width="80" height="80" style="border: 1px solid #000; background: #000;"></canvas>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 10px; font-size: 12px; color: #666;">
+                        Arrow keys to move/rotate, Space to drop
+                    </div>
                 </div>
             </div>
         </div>
@@ -1233,45 +1521,7 @@
             }
         });
         
-        // Initialize with startup sequence
-        window.addEventListener('load', function() {
-            // Startup sequence
-            setTimeout(() => {
-                document.getElementById('startup-sound').style.opacity = '1';
-                setTimeout(() => {
-                    document.getElementById('startup-sound').style.opacity = '0';
-                }, 1000);
-            }, 500);
-            
-            // Add startup animation to welcome message
-            document.querySelector('.welcome-message').classList.add('startup-animation');
-            
-            // Set current time
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('en-US', { 
-                hour: 'numeric', 
-                minute: '2-digit',
-                hour12: true 
-            });
-            document.querySelector('.menu-bar .menu-item:last-child').textContent = timeString;
-            
-            // Update time every minute
-            setInterval(function() {
-                const now = new Date();
-                const timeString = now.toLocaleTimeString('en-US', { 
-                    hour: 'numeric', 
-                    minute: '2-digit',
-                    hour12: true 
-                });
-                document.querySelector('.menu-bar .menu-item:last-child').textContent = timeString;
-            }, 60000);
-            
-            // Add blinking cursor effect to text inputs
-            addBlinkingCursor();
-            
-            // Initialize retro effects
-            initRetroEffects();
-        });
+
         
         // Add blinking cursor to text inputs
         function addBlinkingCursor() {
@@ -1325,7 +1575,7 @@
             }
         }
         
-        // Enhanced window focus
+        
         function bringToFront(window) {
             const allWindows = document.querySelectorAll('.window:not(.hidden)');
             allWindows.forEach(w => {
@@ -1336,7 +1586,7 @@
             window.classList.add('focused');
         }
         
-        // Add scanlines animation
+        
         const style = document.createElement('style');
         style.textContent = `
             @keyframes scanlines {
@@ -1346,7 +1596,7 @@
         `;
         document.head.appendChild(style);
         
-        // Terminal functionality
+        
         document.addEventListener('DOMContentLoaded', function() {
             const terminalInput = document.getElementById('terminal-input');
             const terminalOutput = document.getElementById('terminal-output');
@@ -1400,6 +1650,10 @@
                         - Files<br>
                         - Paint<br>
                         - To-Do<br>
+                        - Steve Jobs<br>
+                        - Ping Pong<br>
+                        - Snake<br>
+                        - Tetris<br>
                         - Terminal<br>
                         - Preferences<br>
                         - Trash
@@ -1501,6 +1755,22 @@
                         e.preventDefault();
                         openApp('terminal');
                         break;
+                    case 'p':
+                        e.preventDefault();
+                        openApp('pingpong');
+                        break;
+                    case 's':
+                        e.preventDefault();
+                        openApp('snake');
+                        break;
+                    case 'g':
+                        e.preventDefault();
+                        openApp('tetris');
+                        break;
+                    case 'j':
+                        e.preventDefault();
+                        openSteveJobsTribute();
+                        break;
                 }
             }
         });
@@ -1538,8 +1808,47 @@
             }, 100);
         }
         
-        // Enhanced startup sequence
         window.addEventListener('load', function() {
+            // Start boot sequence
+            startBootSequence();
+        });
+        
+        // Classic Mac boot sequence
+        function startBootSequence() {
+            const bootScreen = document.getElementById('boot-screen');
+            const monitorFrame = document.querySelector('.monitor-frame');
+            
+            // Hide the main interface during boot
+            monitorFrame.style.display = 'none';
+            
+            // Boot sequence timing
+            setTimeout(() => {
+                // Loading bar completes, "hello" appears
+                // Wait for "hello" animation to complete
+                setTimeout(() => {
+                    // Add blinking cursor effect to "hello"
+                    document.querySelector('.boot-hello').style.animation += ', bootBlink 0.75s step-end infinite';
+                    
+                    // Wait a bit more for the classic Mac feel
+                    setTimeout(() => {
+                        // Fade out boot screen
+                        bootScreen.classList.add('fade-out');
+                        
+                        // Show main interface
+                        setTimeout(() => {
+                            monitorFrame.style.display = 'block';
+                            bootScreen.style.display = 'none';
+                            
+                            // Continue with normal startup sequence
+                            continueStartupSequence();
+                        }, 1000);
+                    }, 2000);
+                }, 2000);
+            }, 3000);
+        }
+        
+        // Continue with normal startup after boot
+        function continueStartupSequence() {
             // Show loading bar
             showLoadingBar();
             
@@ -1579,12 +1888,470 @@
             
             // Initialize retro effects
             initRetroEffects();
-        });
+        }
+        
+        
+        function openSteveJobsTribute() {
+            const window = document.getElementById('steve-jobs-window');
+            const loading = document.getElementById('steve-loading');
+            const image = document.getElementById('steve-image');
+            const quote = document.getElementById('steve-quote');
+            const info = document.getElementById('steve-info');
+            
+            window.classList.remove('hidden');
+            bringToFront(window);
+            
+            
+            loading.style.display = 'block';
+            image.style.display = 'none';
+            quote.style.display = 'none';
+            info.style.display = 'none';
+            
+            
+            setTimeout(() => {
+                loading.style.display = 'none';
+                image.style.display = 'block';
+                
+                
+                setTimeout(() => {
+                    quote.style.display = 'block';
+                    
+                
+                    setTimeout(() => {
+                        info.style.display = 'block';
+                    }, 1000);
+                }, 1000);
+            }, 2000);
+        }
+        
+        
+        let pingPongGame = null;
+        let pingPongScore = 0;
+        
+        function startPingPong() {
+            if (pingPongGame) return;
+            
+            const canvas = document.getElementById('pingpong-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            
+            const game = {
+                ball: { x: canvas.width / 2, y: canvas.height / 2, dx: 4, dy: 2, radius: 8 },
+                leftPaddle: { x: 20, y: canvas.height / 2 - 30, width: 10, height: 60, dy: 0 },
+                rightPaddle: { x: canvas.width - 30, y: canvas.height / 2 - 30, width: 10, height: 60, dy: 0 },
+                score: 0,
+                running: true
+            };
+            
+            pingPongGame = game;
+            
+        
+            function gameLoop() {
+                if (!game.running) return;
+                
+                
+                ctx.fillStyle = '#000';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                
+                game.ball.x += game.ball.dx;
+                game.ball.y += game.ball.dy;
+                
+            
+                if (game.ball.y <= game.ball.radius || game.ball.y >= canvas.height - game.ball.radius) {
+                    game.ball.dy = -game.ball.dy;
+                }
+                
+                
+                if (game.ball.x <= game.leftPaddle.x + game.leftPaddle.width &&
+                    game.ball.y >= game.leftPaddle.y &&
+                    game.ball.y <= game.leftPaddle.y + game.leftPaddle.height) {
+                    game.ball.dx = -game.ball.dx;
+                    game.score++;
+                    document.getElementById('pingpong-score').textContent = game.score;
+                }
+                
+                if (game.ball.x >= game.rightPaddle.x &&
+                    game.ball.y >= game.rightPaddle.y &&
+                    game.ball.y <= game.rightPaddle.y + game.rightPaddle.height) {
+                    game.ball.dx = -game.ball.dx;
+                    game.score++;
+                    document.getElementById('pingpong-score').textContent = game.score;
+                }
+                
+                
+                if (game.ball.x <= 0 || game.ball.x >= canvas.width) {
+                    game.ball.x = canvas.width / 2;
+                    game.ball.y = canvas.height / 2;
+                    game.ball.dx = -game.ball.dx;
+                }
+                
+                
+                game.leftPaddle.y += game.leftPaddle.dy;
+                game.rightPaddle.y += game.rightPaddle.dy;
+                
+            
+                game.leftPaddle.y = Math.max(0, Math.min(canvas.height - game.leftPaddle.height, game.leftPaddle.y));
+                game.rightPaddle.y = Math.max(0, Math.min(canvas.height - game.rightPaddle.height, game.rightPaddle.y));
+                
+                
+                ctx.fillStyle = '#fff';
+                ctx.beginPath();
+                ctx.arc(game.ball.x, game.ball.y, game.ball.radius, 0, Math.PI * 2);
+                ctx.fill();
+                
+                
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(game.leftPaddle.x, game.leftPaddle.y, game.leftPaddle.width, game.leftPaddle.height);
+                ctx.fillRect(game.rightPaddle.x, game.rightPaddle.y, game.rightPaddle.width, game.rightPaddle.height);
+                
+                
+                ctx.strokeStyle = '#fff';
+                ctx.setLineDash([5, 15]);
+                ctx.beginPath();
+                ctx.moveTo(canvas.width / 2, 0);
+                ctx.lineTo(canvas.width / 2, canvas.height);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                requestAnimationFrame(gameLoop);
+            }
+            
+            gameLoop();
+            
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'w') game.leftPaddle.dy = -5;
+                if (e.key === 's') game.leftPaddle.dy = 5;
+                if (e.key === 'ArrowUp') game.rightPaddle.dy = -5;
+                if (e.key === 'ArrowDown') game.rightPaddle.dy = 5;
+            });
+            
+            document.addEventListener('keyup', function(e) {
+                if (e.key === 'w' || e.key === 's') game.leftPaddle.dy = 0;
+                if (e.key === 'ArrowUp' || e.key === 'ArrowDown') game.rightPaddle.dy = 0;
+            });
+        }
+        
+        function pausePingPong() {
+            if (pingPongGame) {
+                pingPongGame.running = !pingPongGame.running;
+                if (pingPongGame.running) {
+                    startPingPong();
+                }
+            }
+        }
+        
+        function resetPingPong() {
+            pingPongGame = null;
+            pingPongScore = 0;
+            document.getElementById('pingpong-score').textContent = '0';
+            const canvas = document.getElementById('pingpong-canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+        
+        
+        let snakeGame = null;
+        let snakeScore = 0;
+        
+        function startSnake() {
+            if (snakeGame) return;
+            
+            const canvas = document.getElementById('snake-canvas');
+            const ctx = canvas.getContext('2d');
+            const gridSize = 10;
+            
+            const game = {
+                snake: [{x: 10, y: 10}],
+                food: {x: 15, y: 15},
+                dx: gridSize,
+                dy: 0,
+                running: true,
+                score: 0
+            };
+            
+            snakeGame = game;
+            
+            function gameLoop() {
+                if (!game.running) return;
+                
+        
+                ctx.fillStyle = '#000';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                
+                const head = {x: game.snake[0].x + game.dx, y: game.snake[0].y + game.dy};
+                game.snake.unshift(head);
+                
+                
+                if (head.x === game.food.x && head.y === game.food.y) {
+                    game.score += 10;
+                    document.getElementById('snake-score').textContent = game.score;
+                    game.food.x = Math.floor(Math.random() * (canvas.width / gridSize)) * gridSize;
+                    game.food.y = Math.floor(Math.random() * (canvas.height / gridSize)) * gridSize;
+                } else {
+                    game.snake.pop();
+                }
+                
+                
+                if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height) {
+                    gameOver();
+                    return;
+                }
+                
+                
+                for (let i = 1; i < game.snake.length; i++) {
+                    if (head.x === game.snake[i].x && head.y === game.snake[i].y) {
+                        gameOver();
+                        return;
+                    }
+                }
+                
+                
+                ctx.fillStyle = '#0f0';
+                game.snake.forEach(segment => {
+                    ctx.fillRect(segment.x, segment.y, gridSize - 1, gridSize - 1);
+                });
+                
+            
+                ctx.fillStyle = '#f00';
+                ctx.fillRect(game.food.x, game.food.y, gridSize - 1, gridSize - 1);
+                
+                setTimeout(() => requestAnimationFrame(gameLoop), 100);
+            }
+            
+            function gameOver() {
+                game.running = false;
+                alert(`Game Over! Score: ${game.score}`);
+            }
+            
+            gameLoop();
+            
+            // Keyboard controls
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowUp' && game.dy === 0) { game.dx = 0; game.dy = -gridSize; }
+                if (e.key === 'ArrowDown' && game.dy === 0) { game.dx = 0; game.dy = gridSize; }
+                if (e.key === 'ArrowLeft' && game.dx === 0) { game.dx = -gridSize; game.dy = 0; }
+                if (e.key === 'ArrowRight' && game.dx === 0) { game.dx = gridSize; game.dy = 0; }
+            });
+        }
+        
+        function pauseSnake() {
+            if (snakeGame) {
+                snakeGame.running = !snakeGame.running;
+                if (snakeGame.running) {
+                    startSnake();
+                }
+            }
+        }
+        
+        function resetSnake() {
+            snakeGame = null;
+            snakeScore = 0;
+            document.getElementById('snake-score').textContent = '0';
+            const canvas = document.getElementById('snake-canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+        
+        
+        let tetrisGame = null;
+        let tetrisScore = 0;
+        let tetrisLevel = 1;
+        let tetrisLines = 0;
+        
+        const tetrisPieces = [
+            [[1, 1, 1, 1]], // I
+            [[1, 1], [1, 1]], // O
+            [[1, 1, 1], [0, 1, 0]], // T
+            [[1, 1, 1], [1, 0, 0]], // L
+            [[1, 1, 1], [0, 0, 1]], // J
+            [[1, 1, 0], [0, 1, 1]], // S
+            [[0, 1, 1], [1, 1, 0]]  // Z
+        ];
+        
+        function startTetris() {
+            if (tetrisGame) return;
+            
+            const canvas = document.getElementById('tetris-canvas');
+            const ctx = canvas.getContext('2d');
+            const nextCanvas = document.getElementById('tetris-next');
+            const nextCtx = nextCanvas.getContext('2d');
+            
+            const game = {
+                board: Array(20).fill().map(() => Array(10).fill(0)),
+                currentPiece: null,
+                currentX: 0,
+                currentY: 0,
+                running: true,
+                score: 0,
+                level: 1,
+                lines: 0
+            };
+            
+            tetrisGame = game;
+            
+            function newPiece() {
+                const pieceIndex = Math.floor(Math.random() * tetrisPieces.length);
+                game.currentPiece = tetrisPieces[pieceIndex];
+                game.currentX = Math.floor((10 - game.currentPiece[0].length) / 2);
+                game.currentY = 0;
+                
+                // Draw next piece
+                nextCtx.fillStyle = '#000';
+                nextCtx.fillRect(0, 0, 80, 80);
+                nextCtx.fillStyle = '#0f0';
+                const nextPiece = tetrisPieces[Math.floor(Math.random() * tetrisPieces.length)];
+                nextPiece.forEach((row, y) => {
+                    row.forEach((cell, x) => {
+                        if (cell) {
+                            nextCtx.fillRect(20 + x * 20, 20 + y * 20, 18, 18);
+                        }
+                    });
+                });
+            }
+            
+            function drawBoard() {
+                ctx.fillStyle = '#000';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw placed pieces
+                game.board.forEach((row, y) => {
+                    row.forEach((cell, x) => {
+                        if (cell) {
+                            ctx.fillStyle = '#0f0';
+                            ctx.fillRect(x * 20, y * 20, 18, 18);
+                        }
+                    });
+                });
+                
+                // Draw current piece
+                if (game.currentPiece) {
+                    ctx.fillStyle = '#f0f';
+                    game.currentPiece.forEach((row, y) => {
+                        row.forEach((cell, x) => {
+                            if (cell) {
+                                ctx.fillRect((game.currentX + x) * 20, (game.currentY + y) * 20, 18, 18);
+                            }
+                        });
+                    });
+                }
+            }
+            
+            function canMove(dx, dy, newPiece = game.currentPiece) {
+                return newPiece.every((row, y) => {
+                    return row.every((cell, x) => {
+                        if (!cell) return true;
+                        const newX = game.currentX + x + dx;
+                        const newY = game.currentY + y + dy;
+                        return newX >= 0 && newX < 10 && newY < 20 && 
+                               (newY < 0 || game.board[newY][newX] === 0);
+                    });
+                });
+            }
+            
+            function placePiece() {
+                game.currentPiece.forEach((row, y) => {
+                    row.forEach((cell, x) => {
+                        if (cell) {
+                            game.board[game.currentY + y][game.currentX + x] = 1;
+                        }
+                    });
+                });
+                
+                // Check for completed lines
+                let linesCleared = 0;
+                for (let y = 19; y >= 0; y--) {
+                    if (game.board[y].every(cell => cell === 1)) {
+                        game.board.splice(y, 1);
+                        game.board.unshift(Array(10).fill(0));
+                        linesCleared++;
+                        y++;
+                    }
+                }
+                
+                if (linesCleared > 0) {
+                    game.lines += linesCleared;
+                    game.score += linesCleared * 100 * game.level;
+                    document.getElementById('tetris-score').textContent = game.score;
+                    document.getElementById('tetris-lines').textContent = game.lines;
+                    document.getElementById('tetris-level').textContent = game.level;
+                }
+                
+                newPiece();
+                
+                if (!canMove(0, 0)) {
+                    gameOver();
+                }
+            }
+            
+            function gameOver() {
+                game.running = false;
+                alert(`Game Over! Score: ${game.score}`);
+            }
+            
+            function gameLoop() {
+                if (!game.running) return;
+                
+                if (canMove(0, 1)) {
+                    game.currentY++;
+                } else {
+                    placePiece();
+                }
+                
+                drawBoard();
+                setTimeout(() => requestAnimationFrame(gameLoop), 1000 - (game.level * 50));
+            }
+            
+            newPiece();
+            gameLoop();
+            
+            // Keyboard controls
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowLeft' && canMove(-1, 0)) game.currentX--;
+                if (e.key === 'ArrowRight' && canMove(1, 0)) game.currentX++;
+                if (e.key === 'ArrowDown' && canMove(0, 1)) game.currentY++;
+                if (e.key === ' ') {
+                    while (canMove(0, 1)) game.currentY++;
+                }
+                drawBoard();
+            });
+        }
+        
+        function pauseTetris() {
+            if (tetrisGame) {
+                tetrisGame.running = !tetrisGame.running;
+                if (tetrisGame.running) {
+                    startTetris();
+                }
+            }
+        }
+        
+        function resetTetris() {
+            tetrisGame = null;
+            tetrisScore = 0;
+            tetrisLevel = 1;
+            tetrisLines = 0;
+            document.getElementById('tetris-score').textContent = '0';
+            document.getElementById('tetris-level').textContent = '1';
+            document.getElementById('tetris-lines').textContent = '0';
+            const canvas = document.getElementById('tetris-canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const nextCanvas = document.getElementById('tetris-next');
+            const nextCtx = nextCanvas.getContext('2d');
+            nextCtx.fillStyle = '#000';
+            nextCtx.fillRect(0, 0, 80, 80);
+        }
     </script>
     
     <!-- Error Dialog -->
     <div class="error-dialog" id="error-dialog">
-        <div class="error-icon">⚠️</div>
+        <div class="error-icon"></div>
         <div class="error-message" id="error-message">An error occurred</div>
         <div class="error-buttons">
             <button class="btn" onclick="closeErrorDialog()">OK</button>
@@ -1592,4 +2359,3 @@
     </div>
 </body>
 </html>
-

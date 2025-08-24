@@ -1,85 +1,92 @@
 # Retro Macintosh System 7 Web App
 
-A nostalgic recreation of the classic Macintosh System 1/2/6/7 interface, built as a web application with that iconic black-and-white aesthetic.
+A nostalgic web-based recreation of the classic Macintosh System 7 interface, complete with retro games and a special tribute to Steve Jobs.
 
 ## Features
 
-### 🖥️ Classic Mac Interface
-- **Black and white design** - Authentic System 7 appearance
-- **Thick borders** - Classic window styling with drop shadows
-- **Chicago-style typography** - Clean, readable fonts
-- **Desktop icons** - Clickable app launchers
-- **Menu bar** - Top menu with Apple logo and system menus
-- **Trash can** - Bottom-right corner for file deletion
+### Classic Mac Interface
+- Authentic System 7 desktop design
+- Classic Mac menu bar and window management
+- Retro CRT effects and scanlines
+- Classic Mac boot sequence with "hello" message
 
-### 📱 Applications
+### Built-in Applications
+- **System Disk** - View system folder contents
+- **Welcome!** - Introduction to the Macintosh
+- **Notes** - Simple text editor with save/load functionality
+- **Calculator** - Basic calculator with classic Mac styling
+- **Files** - File management system
+- **Paint** - Drawing application with canvas
+- **To-Do** - Task management app
+- **Terminal** - Command-line interface with classic commands
+- **System Preferences** - Customize scanlines, CRT effects, and desktop color
 
-#### 📝 Notes App
-- Simple text editor with save/clear functionality
-- Notes are automatically saved to browser localStorage
-- Clean, distraction-free interface
+### Retro Games 🎮
+- **Ping Pong** - Classic two-player paddle game
+  - Controls: W/S keys for left paddle, Arrow keys for right paddle
+  - Features scoring system and authentic retro graphics
+  
+- **Snake** - Classic snake game
+  - Controls: Arrow keys to navigate
+  - Eat red food to grow and increase score
+  
+- **Tetris** - Block-stacking puzzle game
+  - Controls: Arrow keys to move/rotate, Space to drop
+  - Features next piece preview and level progression
 
-#### 🧮 Calculator
-- Full-featured calculator with basic operations
-- Classic button layout
-- Black display with white text
+### Steve Jobs Tribute 🍎
+- Special desktop icon featuring Steve Jobs' image
+- Click to open tribute window with loading message "A Homage to Steve Jobs"
+- Displays Steve's image, famous quote, and biographical information
+- Honors his contributions to personal computing and design
 
-#### 📁 File Manager
-- Browse and manage files
-- Create new files
-- Delete selected files
-- File type icons
+## Controls
 
-#### 🎨 Paint Tool
-- Drawing canvas with mouse support
-- Color picker
-- Clear and save functionality
-- Download drawings as PNG files
+### Keyboard Shortcuts
+- `Ctrl/Cmd + N` - Open Notes
+- `Ctrl/Cmd + C` - Open Calculator
+- `Ctrl/Cmd + F` - Open Files
+- `Ctrl/Cmd + T` - Open Terminal
+- `Ctrl/Cmd + P` - Open Ping Pong
+- `Ctrl/Cmd + S` - Open Snake
+- `Ctrl/Cmd + G` - Open Tetris
+- `Ctrl/Cmd + J` - Open Steve Jobs Tribute
 
-#### ✅ To-Do List
-- Add and remove tasks
-- Checkbox completion tracking
-- Simple task management
-
-## How to Use
-
-1. **Open the app**: Double-click `retro_mac_app.html` or open it in any modern web browser
-2. **Launch apps**: Click on desktop icons to open applications
-3. **Move windows**: Drag windows by their title bars
-4. **Window controls**: Use the minimize (-) and close (×) buttons
-5. **Save data**: Notes are automatically saved, other apps have save buttons
+### Game Controls
+- **Ping Pong**: W/S (left paddle), Up/Down arrows (right paddle)
+- **Snake**: Arrow keys for movement
+- **Tetris**: Arrow keys for movement/rotation, Space for instant drop
 
 ## Technical Details
 
-- **Pure HTML/CSS/JavaScript** - No external dependencies
-- **Responsive design** - Works on different screen sizes
-- **Local storage** - Notes are saved in your browser
-- **Canvas drawing** - Paint app uses HTML5 Canvas
-- **Drag and drop** - Windows can be moved around the desktop
+- Built with vanilla HTML, CSS, and JavaScript
+- Canvas-based games for smooth performance
+- Local storage for saving notes and preferences
+- Responsive design that maintains classic Mac proportions
+- Authentic retro visual effects and animations
+
+## Getting Started
+
+1. Open `retro_mac_app.html` in a modern web browser
+2. Experience the classic Mac boot sequence
+3. Click on desktop icons to open applications
+4. Use keyboard shortcuts for quick access
+5. Enjoy the retro games and explore the interface
 
 ## Browser Compatibility
 
-Works best in modern browsers:
-- Chrome/Edge (recommended)
-- Firefox
-- Safari
-- Mobile browsers (with some limitations)
+Works best in modern browsers that support:
+- HTML5 Canvas
+- CSS3 animations and transforms
+- ES6 JavaScript features
+- Local Storage API
 
-## Customization
+## Credits
 
-The app is built with vanilla web technologies, making it easy to:
-- Modify colors and styles
-- Add new applications
-- Change window layouts
-- Customize desktop icons
+- **Steve Jobs Tribute**: Features the iconic Steve Jobs image and celebrates his legacy
+- **Retro Games**: Classic arcade-style games reimagined for the web
+- **Classic Mac Design**: Faithful recreation of System 7 aesthetics and functionality
 
-## Retro Mac Aesthetic
+---
 
-This app captures the essence of early Macintosh systems:
-- **Monochrome design** - Pure black and white
-- **Pixel-perfect borders** - Sharp, clean lines
-- **Classic typography** - Readable, professional fonts
-- **Intuitive interface** - Simple, direct interaction
-- **Nostalgic feel** - Authentic 1980s/1990s computing experience
-
-Enjoy your trip back to the golden age of personal computing! 🖥️✨
+*"Stay hungry, stay foolish."* - Steve Jobs
