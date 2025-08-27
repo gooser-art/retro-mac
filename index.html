@@ -372,7 +372,16 @@
         
         /* Hidden class */
         .hidden {
-            display: none;
+            display: none !important;
+        }
+        
+        /* Login screen styles */
+        #login-screen {
+            display: flex;
+        }
+        
+        #login-screen.hidden {
+            display: none !important;
         }
         
         /* Drag and drop */
@@ -812,7 +821,33 @@
                 <div class="menu-item">Edit</div>
                 <div class="menu-item">View</div>
                 <div class="menu-item">Special</div>
-                <div style="margin-left: auto;">12:00 PM</div>
+                <div id="menu-clock" style="margin-left: auto;">12:00 PM</div>
+            </div>
+
+            <!-- Login Screen Overlay -->
+            <div id="login-screen" class="hidden" style="position: absolute; inset: 0; background: rgba(0,0,0,0.2); align-items: center; justify-content: center; z-index: 10000;">
+                <div class="window" style="position: relative; width: 360px; min-height: 200px;">
+                    <div class="window-header">
+                        <div class="window-title">Login</div>
+                        <div class="window-controls">
+                            <div class="window-control" onclick="showErrorDialog('Please login to continue')">?</div>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <label>Username
+                                <input id="login-username" type="text" value="Apple User" readonly style="background: #e0e0e0;">
+                            </label>
+                            <label>Password
+                                <input id="login-password" type="password" placeholder="Enter password">
+                            </label>
+                            <div style="font-size: 10px; color: #555; margin-top: 4px;">Hint: steve jobs</div>
+                            <div style="margin-top: 8px; display: flex; justify-content: flex-end;">
+                                <button class="btn" onclick="attemptLogin()">Login</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <!-- Welcome Message with Typing Effect -->
@@ -1839,8 +1874,8 @@
                             monitorFrame.style.display = 'block';
                             bootScreen.style.display = 'none';
                             
-                            // Continue with normal startup sequence
-                            continueStartupSequence();
+                            // Show login screen before continuing
+                            showLoginScreen();
                         }, 1000);
                     }, 2000);
                 }, 2000);
@@ -1863,33 +1898,67 @@
             // Add startup animation to welcome message
             document.querySelector('.welcome-message').classList.add('startup-animation');
             
-            // Set current time
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('en-US', { 
-                hour: 'numeric', 
-                minute: '2-digit',
-                hour12: true 
-            });
-            document.querySelector('.menu-bar .menu-item:last-child').textContent = timeString;
             
-            // Update time every minute
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', {
+                hour: 'numeric',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            });
+            const clockEl = document.getElementById('menu-clock');
+            if (clockEl) clockEl.textContent = timeString;
+
+            
             setInterval(function() {
                 const now = new Date();
-                const timeString = now.toLocaleTimeString('en-US', { 
-                    hour: 'numeric', 
+                const timeString = now.toLocaleTimeString('en-US', {
+                    hour: 'numeric',
                     minute: '2-digit',
-                    hour12: true 
+                    second: '2-digit',
+                    hour12: true
                 });
-                document.querySelector('.menu-bar .menu-item:last-child').textContent = timeString;
-            }, 60000);
+                const clockEl = document.getElementById('menu-clock');
+                if (clockEl) clockEl.textContent = timeString;
+            }, 1000);
             
-            // Add blinking cursor effect to text inputs
+        
             addBlinkingCursor();
             
-            // Initialize retro effects
+            
             initRetroEffects();
         }
         
+        
+        function showLoginScreen() {
+            const login = document.getElementById('login-screen');
+            if (login) {
+                login.classList.remove('hidden');
+                const userInput = document.getElementById('login-username');
+                if (userInput) userInput.focus();
+                const passInput = document.getElementById('login-password');
+                [userInput, passInput].forEach(function(input){
+                    if (!input) return;
+                    input.addEventListener('keydown', function(e){
+                        if (e.key === 'Enter') {
+                            attemptLogin();
+                        }
+                    });
+                });
+            }
+        }
+
+        function attemptLogin() {
+            const password = (document.getElementById('login-password') || {}).value || '';
+            if (password === 'stevejobs') {
+                const login = document.getElementById('login-screen');
+                if (login) login.classList.add('hidden');
+                continueStartupSequence();
+            } else {
+                showErrorDialog('Incorrect password. Hint: steve jobs');
+            }
+        }
+
         
         function openSteveJobsTribute() {
             const window = document.getElementById('steve-jobs-window');
