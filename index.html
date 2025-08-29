@@ -926,7 +926,17 @@
                 Tetris
             </div>
             
-            <!-- Command Prompt Icon -->
+            <div class="desktop-icon" style="top: 280px; left: 260px;" onclick="openApp('breakout')">
+                <div class="icon-welcome">🧱</div>
+                Breakout
+            </div>
+            
+            <div class="desktop-icon" style="top: 360px; left: 20px;" onclick="openApp('minesweeper')">
+                <div class="icon-welcome">💣</div>
+                Minesweeper
+            </div>
+            
+        
             <div class="desktop-icon" style="top: 200px; left: 20px;" onclick="openApp('terminal')">
                 <div class="icon-welcome">💻</div>
                 Terminal
@@ -938,7 +948,7 @@
                 Preferences
             </div>
         
-            <!-- System Disk Window -->
+        
             <div id="system-window" class="window hidden" style="top: 100px; left: 100px; width: 400px; height: 300px;">
                 <div class="window-header">
                     <div class="window-title">System Disk</div>
@@ -1275,6 +1285,56 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Breakout Game Window -->
+            <div id="breakout-window" class="window hidden" style="top: 180px; left: 150px; width: 600px; height: 420px;">
+                <div class="window-header">
+                    <div class="window-title">Breakout</div>
+                    <div class="window-controls">
+                        <div class="window-control" onclick="minimizeWindow('breakout-window')">-</div>
+                        <div class="window-control" onclick="closeWindow('breakout-window')">×</div>
+                    </div>
+                </div>
+                <div class="window-content">
+                    <div style="text-align: center; margin-bottom: 16px;">
+                        <button class="btn" onclick="startBreakout()">Start Game</button>
+                        <button class="btn" onclick="pauseBreakout()">Pause</button>
+                        <button class="btn" onclick="resetBreakout()">Reset</button>
+                        <span style="margin-left: 20px; font-weight: bold;">Score: <span id="breakout-score">0</span></span>
+                        <span style="margin-left: 20px; font-weight: bold;">Lives: <span id="breakout-lives">3</span></span>
+                    </div>
+                    <canvas id="breakout-canvas" width="550" height="300" style="border: 2px solid #000; background: #000; display: block; margin: 0 auto;"></canvas>
+                    <div style="text-align: center; margin-top: 10px; font-size: 12px; color: #666;">
+                        Move paddle with Left/Right arrows or A/D
+                    </div>
+                </div>
+            </div>
+
+            <!-- Minesweeper Game Window -->
+            <div id="minesweeper-window" class="window hidden" style="top: 120px; left: 260px; width: 420px; height: 520px;">
+                <div class="window-header">
+                    <div class="window-title">Minesweeper</div>
+                    <div class="window-controls">
+                        <div class="window-control" onclick="minimizeWindow('minesweeper-window')">-</div>
+                        <div class="window-control" onclick="closeWindow('minesweeper-window')">×</div>
+                    </div>
+                </div>
+                <div class="window-content">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <div><strong>Mines:</strong> <span id="minesweeper-mines-left">10</span></div>
+                        <div>
+                            <button class="btn" onclick="resetMinesweeper()">New Game</button>
+                        </div>
+                    </div>
+                    <div id="minesweeper-grid" style="display: grid; grid-template-columns: repeat(10, 1fr); gap: 2px; width: 360px; margin: 0 auto;"></div>
+                    <div style="text-align: center; margin-top: 10px; font-size: 12px; color: #666;">
+                        Left-click to reveal, Right-click to flag
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dock -->
+            <div id="dock" style="position: absolute; left: 0; right: 0; bottom: 0; height: 36px; background: #c0c0c0; border-top: 2px solid #000; box-shadow: inset 1px 1px 0 #fff; display: flex; align-items: center; gap: 6px; padding: 4px 8px;"></div>
         </div>
     </div>
 
@@ -1304,10 +1364,24 @@
         }
         
         function minimizeWindow(windowId) {
-            const window = document.getElementById(windowId);
-            if (window) {
-                window.classList.add('hidden');
-            }
+            const win = document.getElementById(windowId);
+            if (!win) return;
+            win.classList.add('hidden');
+            const dock = document.getElementById('dock');
+            if (!dock) return;
+            const existing = dock.querySelector(`[data-window="${windowId}"]`);
+            if (existing) return;
+            const btn = document.createElement('button');
+            btn.className = 'btn';
+            btn.setAttribute('data-window', windowId);
+            const title = win.querySelector('.window-title')?.textContent || windowId;
+            btn.textContent = title;
+            btn.onclick = function(){
+                win.classList.remove('hidden');
+                bringToFront(win);
+                btn.remove();
+            };
+            dock.appendChild(btn);
         }
         
         function bringToFront(window) {
@@ -1555,6 +1629,56 @@
                 e.target.closest('.desktop-icon').classList.add('selected');
             }
         });
+
+        
+        (function enableIconDragging(){
+            const icons = Array.from(document.querySelectorAll('.desktop .desktop-icon'));
+            const positionsKey = 'retroMacIconPositions';
+            const desktopRect = document.querySelector('.desktop').getBoundingClientRect();
+            function loadPositions(){
+                try { return JSON.parse(localStorage.getItem(positionsKey) || '{}'); } catch { return {}; }
+            }
+            function savePositions(map){ localStorage.setItem(positionsKey, JSON.stringify(map)); }
+            const pos = loadPositions();
+            // Apply saved positions by using a stable key (innerText label)
+            icons.forEach(icon => {
+                const label = icon.textContent.trim();
+                if (pos[label]) {
+                    icon.style.top = pos[label].top;
+                    icon.style.left = pos[label].left;
+                    icon.style.right = '';
+                }
+                let dragging = false; let offsetX = 0; let offsetY = 0;
+                icon.addEventListener('mousedown', function(e){
+                    dragging = true;
+                    icon.classList.add('dragging');
+                    const r = icon.getBoundingClientRect();
+                    offsetX = e.clientX - r.left; offsetY = e.clientY - r.top;
+                    document.addEventListener('mousemove', onMove);
+                    document.addEventListener('mouseup', onUp);
+                });
+                function onMove(e){
+                    if (!dragging) return;
+                    let x = e.clientX - desktopRect.left - offsetX;
+                    let y = e.clientY - desktopRect.top - offsetY;
+                    x = Math.max(0, Math.min(desktopRect.width - icon.offsetWidth, x));
+                    y = Math.max(0, Math.min(desktopRect.height - icon.offsetHeight - 36, y));
+                    icon.style.left = x + 'px';
+                    icon.style.top = y + 'px';
+                    icon.style.right = '';
+                }
+                function onUp(){
+                    if (!dragging) return;
+                    dragging = false;
+                    icon.classList.remove('dragging');
+                    document.removeEventListener('mousemove', onMove);
+                    document.removeEventListener('mouseup', onUp);
+                    const label = icon.textContent.trim();
+                    pos[label] = { top: icon.style.top, left: icon.style.left };
+                    savePositions(pos);
+                }
+            });
+        })();
         
 
         
@@ -1689,6 +1813,8 @@
                         - Ping Pong<br>
                         - Snake<br>
                         - Tetris<br>
+                        - Breakout<br>
+                        - Minesweeper<br>
                         - Terminal<br>
                         - Preferences<br>
                         - Trash
@@ -1741,13 +1867,13 @@
         }
         
         function resetPreferences() {
-            // Reset toggles
+            
             document.getElementById('scanlines-toggle').checked = true;
             document.getElementById('crt-toggle').checked = true;
             document.getElementById('animations-toggle').checked = true;
             document.getElementById('desktop-color').value = '#c0c0c0';
             
-            // Apply reset
+            
             applyPreferences();
         }
         
@@ -1761,14 +1887,51 @@
         });
         
         // Add right-click context menu (simulated)
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-            if (e.target.closest('.desktop-icon')) {
-                const icon = e.target.closest('.desktop-icon');
-                icon.classList.add('selected');
-                setTimeout(() => icon.classList.remove('selected'), 1000);
-            }
-        });
+        // Context menu for desktop icons: rename/delete
+        (function setupContextMenu(){
+            const menu = document.createElement('div');
+            menu.id = 'context-menu';
+            menu.style.cssText = 'position:absolute;display:none;background:#fff;border:2px solid #000;box-shadow:4px 4px 0 rgba(0,0,0,0.5);z-index:10001;min-width:140px;font-size:12px;';
+            menu.innerHTML = '<div data-action="rename" style="padding:6px 10px;cursor:pointer;border-bottom:1px solid #000;">Rename</div><div data-action="delete" style="padding:6px 10px;cursor:pointer;">Delete</div>';
+            document.body.appendChild(menu);
+            let targetIcon = null;
+            function hide(){ menu.style.display='none'; targetIcon=null; }
+            document.addEventListener('click', hide);
+            document.addEventListener('contextmenu', function(e){
+                if (!e.target.closest('.desktop-icon')) return;
+                e.preventDefault();
+                targetIcon = e.target.closest('.desktop-icon');
+                document.querySelectorAll('.desktop-icon').forEach(i=>i.classList.remove('selected'));
+                targetIcon.classList.add('selected');
+                menu.style.left = e.pageX + 'px';
+                menu.style.top = e.pageY + 'px';
+                menu.style.display = 'block';
+            });
+            menu.addEventListener('click', function(e){
+                const action = e.target.getAttribute('data-action');
+                if (!action || !targetIcon) return hide();
+                const labelEl = Array.from(targetIcon.childNodes).find(n=>n.nodeType===3) || null;
+                const positionsKey = 'retroMacIconPositions';
+                const pos = JSON.parse(localStorage.getItem(positionsKey) || '{}');
+                function getLabel(){ return (targetIcon.textContent||'').trim(); }
+                if (action === 'rename'){
+                    const current = getLabel();
+                    const name = prompt('Rename icon:', current);
+                    if (name && name !== current){
+                        // Replace trailing text node with new label
+                        targetIcon.lastChild.nodeType===3 ? targetIcon.lastChild.nodeValue = name : targetIcon.appendChild(document.createTextNode(name));
+                        if (pos[current]){ pos[name] = pos[current]; delete pos[current]; localStorage.setItem(positionsKey, JSON.stringify(pos)); }
+                    }
+                } else if (action === 'delete'){
+                    const current = getLabel();
+                    if (confirm(`Delete ${current}?`)){
+                        if (pos[current]){ delete pos[current]; localStorage.setItem(positionsKey, JSON.stringify(pos)); }
+                        targetIcon.remove();
+                    }
+                }
+                hide();
+            });
+        })();
         
         // Add keyboard shortcuts
         document.addEventListener('keydown', function(e) {
@@ -2415,6 +2578,148 @@
             const nextCtx = nextCanvas.getContext('2d');
             nextCtx.fillStyle = '#000';
             nextCtx.fillRect(0, 0, 80, 80);
+        }
+
+        // Breakout game
+        let breakoutGame = null;
+        function startBreakout() {
+            if (breakoutGame) return;
+            const canvas = document.getElementById('breakout-canvas');
+            const ctx = canvas.getContext('2d');
+            const paddleWidth = 80, paddleHeight = 10;
+            const brickRowCount = 5, brickColumnCount = 9, brickWidth = 50, brickHeight = 16, brickPadding = 4, brickOffsetTop = 30, brickOffsetLeft = 20;
+            const game = {
+                ball: { x: canvas.width / 2, y: canvas.height - 30, dx: 3, dy: -3, r: 6 },
+                paddle: { x: (canvas.width - paddleWidth) / 2, y: canvas.height - 20, w: paddleWidth, h: paddleHeight, dx: 0 },
+                rightPressed: false,
+                leftPressed: false,
+                score: 0,
+                lives: 3,
+                running: true,
+                bricks: []
+            };
+            for (let c = 0; c < brickColumnCount; c++) {
+                game.bricks[c] = [];
+                for (let r = 0; r < brickRowCount; r++) {
+                    const x = c * (brickWidth + brickPadding) + brickOffsetLeft;
+                    const y = r * (brickHeight + brickPadding) + brickOffsetTop;
+                    game.bricks[c][r] = { x, y, status: 1 };
+                }
+            }
+            breakoutGame = game;
+            function draw() {
+                if (!game.running) return;
+                ctx.fillStyle = '#000';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                // Bricks
+                game.bricks.forEach(column => column.forEach(b => {
+                    if (!b.status) return;
+                    ctx.fillStyle = '#0f0';
+                    ctx.fillRect(b.x, b.y, brickWidth, brickHeight);
+                }));
+                // Ball
+                ctx.fillStyle = '#fff';
+                ctx.beginPath();
+                ctx.arc(game.ball.x, game.ball.y, game.ball.r, 0, Math.PI * 2);
+                ctx.fill();
+                // Paddle
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(game.paddle.x, game.paddle.y, game.paddle.w, game.paddle.h);
+                // Movement
+                game.ball.x += game.ball.dx;
+                game.ball.y += game.ball.dy;
+                if (game.ball.x + game.ball.r > canvas.width || game.ball.x - game.ball.r < 0) game.ball.dx = -game.ball.dx;
+                if (game.ball.y - game.ball.r < 0) game.ball.dy = -game.ball.dy;
+                // Paddle collision
+                if (game.ball.y + game.ball.r >= game.paddle.y && game.ball.x >= game.paddle.x && game.ball.x <= game.paddle.x + game.paddle.w) {
+                    game.ball.dy = -Math.abs(game.ball.dy);
+                    const hitPos = (game.ball.x - (game.paddle.x + game.paddle.w / 2)) / (game.paddle.w / 2);
+                    game.ball.dx = 4 * hitPos;
+                }
+                // Bottom
+                if (game.ball.y + game.ball.r > canvas.height) {
+                    game.lives--;
+                    document.getElementById('breakout-lives').textContent = game.lives;
+                    if (game.lives <= 0) {
+                        alert(`Game Over! Score: ${game.score}`);
+                        game.running = false;
+                        return;
+                    } else {
+                        game.ball = { x: canvas.width / 2, y: canvas.height - 30, dx: 3, dy: -3, r: 6 };
+                        game.paddle.x = (canvas.width - game.paddle.w) / 2;
+                    }
+                }
+                // Brick collisions
+                game.bricks.forEach(column => column.forEach(b => {
+                    if (!b.status) return;
+                    if (game.ball.x > b.x && game.ball.x < b.x + brickWidth && game.ball.y > b.y && game.ball.y < b.y + brickHeight) {
+                        game.ball.dy = -game.ball.dy;
+                        b.status = 0;
+                        game.score += 10;
+                        document.getElementById('breakout-score').textContent = game.score;
+                    }
+                }));
+                // Paddle move
+                if (game.rightPressed) game.paddle.x = Math.min(canvas.width - game.paddle.w, game.paddle.x + 6);
+                if (game.leftPressed) game.paddle.x = Math.max(0, game.paddle.x - 6);
+                requestAnimationFrame(draw);
+            }
+            function keyDown(e){ if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') game.rightPressed = true; if (e.key === 'ArrowLeft' || e.key.toLowerCase() === 'a') game.leftPressed = true; }
+            function keyUp(e){ if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') game.rightPressed = false; if (e.key === 'ArrowLeft' || e.key.toLowerCase() === 'a') game.leftPressed = false; }
+            document.addEventListener('keydown', keyDown);
+            document.addEventListener('keyup', keyUp);
+            draw();
+        }
+        function pauseBreakout(){ if (breakoutGame) breakoutGame.running = !breakoutGame.running; if (breakoutGame && breakoutGame.running) startBreakout(); }
+        function resetBreakout(){ breakoutGame = null; document.getElementById('breakout-score').textContent = '0'; document.getElementById('breakout-lives').textContent = '3'; const canvas = document.getElementById('breakout-canvas'); const ctx = canvas.getContext('2d'); ctx.fillStyle = '#000'; ctx.fillRect(0,0,canvas.width,canvas.height); }
+
+        // Minesweeper
+        let minesweeper = null;
+        function resetMinesweeper(){
+            const cols = 10, rows = 12, mines = 10;
+            const gridEl = document.getElementById('minesweeper-grid');
+            gridEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+            gridEl.innerHTML = '';
+            const cells = Array.from({length: rows * cols}, (_, i) => ({
+                index: i, mine: false, revealed: false, flagged: false, adj: 0
+            }));
+            // place mines
+            let placed = 0; while (placed < mines){ const idx = Math.floor(Math.random()*cells.length); if (!cells[idx].mine){ cells[idx].mine = true; placed++; }}
+            // adjacency
+            const neighbors = (i)=>{
+                const x = i % cols, y = Math.floor(i/cols);
+                const list = [];
+                for (let dy=-1; dy<=1; dy++) for (let dx=-1; dx<=1; dx++){
+                    if (dx===0 && dy===0) continue; const nx=x+dx, ny=y+dy; if (nx>=0&&nx<cols&&ny>=0&&ny<rows) list.push(ny*cols+nx);
+                }
+                return list;
+            };
+            cells.forEach(c=>{ if (!c.mine){ c.adj = neighbors(c.index).filter(n=>cells[n].mine).length; }});
+            // render
+            document.getElementById('minesweeper-mines-left').textContent = mines;
+            minesweeper = { cells, cols, rows, mines, flags: 0, revealed: 0, running: true };
+            cells.forEach(c=>{
+                const btn = document.createElement('button');
+                btn.className = 'btn';
+                btn.style.width = '34px'; btn.style.height = '34px'; btn.style.padding = '0'; btn.style.fontWeight = 'bold';
+                btn.oncontextmenu = (e)=>{ e.preventDefault(); if (!minesweeper.running || c.revealed) return; c.flagged = !c.flagged; btn.textContent = c.flagged ? '⚑' : ''; minesweeper.flags += c.flagged ? 1 : -1; document.getElementById('minesweeper-mines-left').textContent = Math.max(0, mines - minesweeper.flags); };
+                btn.onclick = ()=> revealCell(c, btn);
+                gridEl.appendChild(btn);
+            });
+            function revealCell(cell, el){
+                if (!minesweeper.running || cell.revealed || cell.flagged) return;
+                cell.revealed = true; el.disabled = true; el.style.background = '#ddd';
+                if (cell.mine){ el.textContent = '💥'; gameOver(false); return; }
+                minesweeper.revealed++;
+                if (cell.adj>0){ el.textContent = String(cell.adj); }
+                else { neighbors(cell.index).forEach(i=>{ const n = minesweeper.cells[i]; const button = gridEl.children[i]; if (!n.revealed) revealCell(n, button); }); }
+                if (minesweeper.revealed === cols*rows - mines) gameOver(true);
+            }
+            function gameOver(won){
+                minesweeper.running = false;
+                for (let i=0;i<cells.length;i++){ const c=cells[i]; const b=gridEl.children[i]; if (c.mine) { b.textContent = '💣'; b.disabled = true; }}
+                setTimeout(()=> alert(won ? 'You win!' : 'Boom! Try again.'), 10);
+            }
         }
     </script>
     
